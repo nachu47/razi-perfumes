@@ -4,19 +4,7 @@ import { getProductById, categories } from '../data/productsData';
 
 export default function ProductDetailView({ productId, onNavigate, onAddToCart, onToggleWishlist, wishlist = [] }) {
   const product = getProductById(productId);
-  const [qty, setQty] = useState(1);
-  const [activeTab, setActiveTab] = useState('notes'); // notes | ingredients
-
-  const handleBuyNow = () => {
-    let msg = `Hello Razi Perfumes! I would like to order:\n\n`;
-    msg += `• ${product.name} (${product.volume}) x ${qty} - ${product.price}\n\n`;
-    msg += `Please confirm my order. Thank you!`;
-    
-    const encoded = encodeURIComponent(msg);
-    const whatsappUrl = `https://wa.me/919061627236?text=${encoded}`;
-    window.open(whatsappUrl, '_blank');
-  };
-
+  
   if (!product) {
     return (
       <div className={styles.container}>
@@ -26,16 +14,38 @@ export default function ProductDetailView({ productId, onNavigate, onAddToCart, 
     );
   }
 
-  const categoryInfo = categories.find(c => c.id === product.category) || { name: 'Signature Line' };
+  // Setup state for size selection and quantity
+  const [selectedSize, setSelectedSize] = useState(product.sizes ? product.sizes[0] : product.volume);
+  const [qty, setQty] = useState(1);
+  const [activeTab, setActiveTab] = useState('notes'); // notes | ingredients
+
+  const currentPrice = product.prices ? product.prices[selectedSize] : product.price;
+
+  const handleBuyNow = () => {
+    let msg = `Hello Razi Perfumes! I would like to order:\n\n`;
+    msg += `• ${product.name} (${selectedSize}) x ${qty} - ${currentPrice}\n\n`;
+    msg += `Please confirm my order. Thank you!`;
+    
+    const encoded = encodeURIComponent(msg);
+    const whatsappUrl = `https://wa.me/919061627236?text=${encoded}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
+  const categoryInfo = categories.find(c => c.id === product.category) || { name: "Signature Collection's" };
   const isWishlisted = wishlist.includes(product.id);
 
   const increment = () => setQty(prev => prev + 1);
   const decrement = () => setQty(prev => (prev > 1 ? prev - 1 : 1));
 
   const handleAddToCartWithQty = () => {
-    // Add product to cart with specified quantity
+    // Add customized product info to cart
+    const customProduct = {
+      ...product,
+      volume: selectedSize,
+      price: currentPrice
+    };
     for (let i = 0; i < qty; i++) {
-      onAddToCart(product);
+      onAddToCart(customProduct);
     }
   };
 
@@ -63,11 +73,52 @@ export default function ProductDetailView({ productId, onNavigate, onAddToCart, 
         {/* Right: Product Details */}
         <div className={styles.detailsColumn}>
           <div className={styles.meta}>
-            <span className={styles.categoryLabel}>{categoryInfo.name}</span>
+            <div className={styles.metaHeader}>
+              <span className={styles.categoryLabel}>{categoryInfo.name}</span>
+              {product.gender && (
+                <span className={styles.genderBadge}>{product.gender.toUpperCase()}</span>
+              )}
+            </div>
             <h1 className={styles.title}>{product.name}</h1>
-            <p className={styles.volume}>{product.volume}</p>
-            <p className={styles.price}>{product.price}</p>
+            <p className={styles.price}>{currentPrice}</p>
           </div>
+
+          {/* Size Options Selector */}
+          {product.sizes ? (
+            <div className={styles.specSection}>
+              <span className={styles.specTitle}>SELECT SIZE</span>
+              <div className={styles.sizeOptions}>
+                {product.sizes.map(size => (
+                  <button
+                    key={size}
+                    onClick={() => setSelectedSize(size)}
+                    className={`${styles.sizeBtn} ${selectedSize === size ? styles.sizeBtnActive : ''}`}
+                  >
+                    {size}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className={styles.specSection}>
+              <span className={styles.specTitle}>SIZE</span>
+              <p className={styles.volumeStatic}>{product.volume}</p>
+            </div>
+          )}
+
+          {/* Smell Nature Tags */}
+          {product.noteTags && (
+            <div className={styles.specSection}>
+              <span className={styles.specTitle}>SMELL NATURE</span>
+              <div className={styles.tagsContainer}>
+                {product.noteTags.map(tag => (
+                  <span key={tag} className={styles.tagChip}>
+                    {tag.toUpperCase()}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
 
           <p className={styles.description}>{product.description}</p>
 
@@ -146,7 +197,6 @@ export default function ProductDetailView({ productId, onNavigate, onAddToCart, 
               </button>
             </div>
           </div>
-        </div>
       </div>
     </div>
   );

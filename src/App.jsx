@@ -96,11 +96,11 @@ export default function App() {
   };
 
   const handleAddToCart = (product) => {
-    // Add product or increase quantity if already exists
-    const existing = cart.find(item => item.id === product.id);
+    // Add product or increase quantity if already exists (differentiated by id and volume)
+    const existing = cart.find(item => item.id === product.id && item.volume === product.volume);
     if (existing) {
       setCart(cart.map(item =>
-        item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        (item.id === product.id && item.volume === product.volume) ? { ...item, quantity: item.quantity + 1 } : item
       ));
     } else {
       setCart([...cart, { ...product, quantity: 1 }]);
@@ -108,13 +108,13 @@ export default function App() {
     setCartOpen(true);
   };
 
-  const handleRemoveFromCart = (productId) => {
-    setCart(cart.filter(item => item.id !== productId));
+  const handleRemoveFromCart = (productId, volume) => {
+    setCart(cart.filter(item => !(item.id === productId && item.volume === volume)));
   };
 
-  const handleUpdateQuantity = (productId, amount) => {
+  const handleUpdateQuantity = (productId, volume, amount) => {
     setCart(cart.map(item => {
-      if (item.id === productId) {
+      if (item.id === productId && item.volume === volume) {
         const nextQty = item.quantity + amount;
         return nextQty > 0 ? { ...item, quantity: nextQty } : item;
       }
@@ -297,7 +297,7 @@ export default function App() {
           <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '20px' }}>
               {cart.map((item) => (
-                <div key={item.id} style={{ display: 'flex', gap: '16px', borderBottom: '1px solid var(--light-gray)', paddingBottom: '20px' }}>
+                <div key={`${item.id}-${item.volume}`} style={{ display: 'flex', gap: '16px', borderBottom: '1px solid var(--light-gray)', paddingBottom: '20px' }}>
                   <div style={{ width: '80px', height: '100px', backgroundColor: 'var(--cream)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(0,0,0,0.03)' }}>
                     <img src={item.image} alt={item.name} style={{ maxWidth: '90%', maxHeight: '90%', objectFit: 'contain' }} />
                   </div>
@@ -306,7 +306,7 @@ export default function App() {
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                         <h4 style={{ fontSize: '13px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', fontFamily: 'var(--font-heading)' }}>{item.name}</h4>
                         <button
-                          onClick={() => handleRemoveFromCart(item.id)}
+                          onClick={() => handleRemoveFromCart(item.id, item.volume)}
                           style={{ fontSize: '12px', color: 'var(--mid-gray)', cursor: 'pointer' }}
                         >
                           ✕
@@ -318,14 +318,14 @@ export default function App() {
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', border: '1px solid var(--light-gray)', background: 'var(--white)' }}>
                         <button
-                          onClick={() => handleUpdateQuantity(item.id, -1)}
+                          onClick={() => handleUpdateQuantity(item.id, item.volume, -1)}
                           style={{ padding: '6px 12px', fontSize: '12px', fontWeight: 600 }}
                         >
                           -
                         </button>
                         <span style={{ padding: '0 8px', fontSize: '12px', fontWeight: 600 }}>{item.quantity}</span>
                         <button
-                          onClick={() => handleUpdateQuantity(item.id, 1)}
+                          onClick={() => handleUpdateQuantity(item.id, item.volume, 1)}
                           style={{ padding: '6px 12px', fontSize: '12px', fontWeight: 600 }}
                         >
                           +

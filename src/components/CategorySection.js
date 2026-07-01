@@ -1,14 +1,7 @@
 'use client';
 import styles from './CategorySection.module.css';
 
-const categories = [
-  { id: 'signature', name: 'Signature Line', image: 'https://kw.gissah.com/web/image/product.public.category/13/image_1920/1024x0?unique=cc42a6c' },
-  { id: 'luxury', name: 'Luxury Line', image: 'https://kw.gissah.com/web/image/product.public.category/11/image_1920/1024x0?unique=3d8a714' },
-  { id: 'hair-body', name: 'Hair & Body', image: 'https://kw.gissah.com/web/image/product.public.category/52/image_1920/1024x0?unique=1e629ba' },
-  { id: 'sets', name: 'Sets Line', image: 'https://kw.gissah.com/web/image/product.public.category/18/image_1920/1024x0?unique=1ab1e03' },
-  { id: 'musk', name: 'Musk Collection', image: 'https://kw.gissah.com/web/image/product.public.category/14/image_1920/1024x0?unique=fdb1ef3' },
-  { id: 'home-fragrance', name: 'Home Fragrance', image: 'https://kw.gissah.com/web/image/product.public.category/53/image_1920/1024x0?unique=21288ce' },
-];
+import { categories } from '../data/productsData';
 
 export default function CategorySection({ onNavigate }) {
   return (
