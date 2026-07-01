@@ -10,7 +10,7 @@ const categories = [
   { id: 'home-fragrance', name: 'Home Fragrance', image: 'https://kw.gissah.com/web/image/product.public.category/53/image_1920/1024x0?unique=21288ce' },
 ];
 
-export default function CategorySection() {
+export default function CategorySection({ onNavigate }) {
   return (
     <section className={styles.section}>
       {/* Brand Poem */}
@@ -26,7 +26,15 @@ export default function CategorySection() {
 
       <div className={styles.grid}>
         {categories.map(c => (
-          <a key={c.id} href={`/collection/${c.id}`} className={styles.card}>
+          <a 
+            key={c.id} 
+            href={`/collection/${c.id}`} 
+            className={styles.card}
+            onClick={(e) => {
+              e.preventDefault();
+              onNavigate && onNavigate('collection', c.id);
+            }}
+          >
             <div className={styles.imageWrap}>
               <img src={c.image} alt={c.name} className={styles.image} />
               <div className={styles.overlay} />

@@ -157,9 +157,15 @@
   .inner {
     padding: 0 20px;
     height: 64px;
+    position: relative; /* Context for absolute centering */
+  }
+  .center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
   }
   .logoArabic {
-    font-size: 24px;
+    display: none; /* Keep only one (English) on mobile as requested */
   }
   .logoLatin {
     font-size: 9px;

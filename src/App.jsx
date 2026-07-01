@@ -6,6 +6,8 @@ import CategorySection from './components/CategorySection';
 import Footer from './components/Footer';
 import CountryModal from './components/CountryModal';
 import SidebarDrawer from './components/SidebarDrawer';
+import CollectionView from './components/CollectionView';
+import ProductDetailView from './components/ProductDetailView';
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -15,6 +17,25 @@ export default function App() {
   const [cart, setCart] = useState([]);
   const [wishlist, setWishlist] = useState([]);
   const [country, setCountry] = useState(null);
+
+  // Custom SPA Routing State
+  const [currentView, setCurrentView] = useState('home');
+  const [activeCollectionId, setActiveCollectionId] = useState(null);
+  const [activeProductId, setActiveProductId] = useState(null);
+
+  // Router logic using HTML5 History API
+  const navigate = (view, collectionId = null, productId = null) => {
+    setCurrentView(view);
+    setActiveCollectionId(collectionId);
+    setActiveProductId(productId);
+
+    let path = '/';
+    if (view === 'collection') path = `/collection/${collectionId}`;
+    if (view === 'product') path = `/product/${productId}`;
+
+    window.history.pushState({ view, collectionId, productId }, '', path);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   // Splash Screen Timeout
   useEffect(() => {
@@ -42,6 +63,29 @@ export default function App() {
     if (savedWishlist) {
       setWishlist(JSON.parse(savedWishlist));
     }
+  }, []);
+
+  // History Navigation listener & initial path loader
+  useEffect(() => {
+    const handlePopState = (e) => {
+      const state = e.state || {};
+      setCurrentView(state.view || 'home');
+      setActiveCollectionId(state.collectionId || null);
+      setActiveProductId(state.productId || null);
+    };
+
+    const path = window.location.pathname;
+    const pathParts = path.split('/');
+    if (pathParts[1] === 'collection' && pathParts[2]) {
+      setCurrentView('collection');
+      setActiveCollectionId(pathParts[2]);
+    } else if (pathParts[1] === 'product' && pathParts[2]) {
+      setCurrentView('product');
+      setActiveProductId(pathParts[2]);
+    }
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
   const handleSelectCountry = (selectedCountry, lang) => {
@@ -97,13 +141,29 @@ export default function App() {
     return `${totalNum.toFixed(3)} ${currency}`;
   };
 
+  const handleCheckout = () => {
+    if (cart.length === 0) return;
+
+    let msg = `Hello Razi Perfumes! I would like to place an order:\n\n`;
+    cart.forEach((item, index) => {
+      msg += `${index + 1}. ${item.name} (${item.volume}) x ${item.quantity} - ${item.price}\n`;
+    });
+    msg += `\nTotal: ${calculateTotal()}\n`;
+    msg += `Country: ${country ? country.name : 'Not selected'}\n\n`;
+    msg += `Please confirm my order. Thank you!`;
+
+    const encoded = encodeURIComponent(msg);
+    const whatsappUrl = `https://wa.me/919061627236?text=${encoded}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
   return (
     <div style={{ background: 'var(--ivory)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Splash Screen */}
       <div className={`pre-home-overlay ${!showSplash ? 'hidden' : ''}`}>
         <div className="pre-home-container">
           <div className="pre-home-ring"></div>
-          <h1 className="pre-home-logo">GISSAH</h1>
+          <h1 className="pre-home-logo">RAZI PERFUMES</h1>
         </div>
       </div>
 
@@ -120,40 +180,79 @@ export default function App() {
         onCountryOpen={() => setShowCountryModal(true)}
         cartCount={cart.reduce((sum, item) => sum + item.quantity, 0)}
         wishlistCount={wishlist.length}
+        onNavigate={navigate}
       />
 
-      <HeroSlider />
+      {/* Main View Router */}
+      <main style={{ flex: 1 }}>
+        {currentView === 'home' && (
+          <>
+            <HeroSlider />
 
-      <ProductCarousel
-        title="RECOMMENDED FOR YOU"
-        type="signature"
-        onAddToCart={handleAddToCart}
-        onToggleWishlist={handleToggleWishlist}
-        wishlist={wishlist}
-      />
+            <ProductCarousel
+              title="RECOMMENDED FOR YOU"
+              type="signature"
+              onAddToCart={handleAddToCart}
+              onToggleWishlist={handleToggleWishlist}
+              wishlist={wishlist}
+              onNavigate={navigate}
+            />
 
-      <CategorySection />
+            <CategorySection onNavigate={navigate} />
 
-      {/* Category Highlight Section */}
-      <section
-        className="highlightSection"
-        style={{ backgroundImage: `url('https://kw.gissah.com/web/image/product.public.category/18/background_image/1920x0?unique=1ab1e03')` }}
-      >
-        <div className="highlightOverlay" />
-        <div className="highlightContent">
-          <span className="highlightSubtitle">Sets Line</span>
-          <h2 className="highlightTitle">Curated Gift Collections</h2>
-          <a href="/shop" className="highlightCta">DISCOVER</a>
-        </div>
-      </section>
+            {/* Category Highlight Section */}
+            <section
+              className="highlightSection"
+              style={{ backgroundImage: `url('https://kw.gissah.com/web/image/product.public.category/18/background_image/1920x0?unique=1ab1e03')` }}
+            >
+              <div className="highlightOverlay" />
+              <div className="highlightContent">
+                <span className="highlightSubtitle">Sets Line</span>
+                <h2 className="highlightTitle">Curated Gift Collections</h2>
+                <a
+                  href="/collection/sets"
+                  className="highlightCta"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate('collection', 'sets');
+                  }}
+                >
+                  DISCOVER
+                </a>
+              </div>
+            </section>
 
-      <ProductCarousel
-        title="LUXURY LINE"
-        type="luxury"
-        onAddToCart={handleAddToCart}
-        onToggleWishlist={handleToggleWishlist}
-        wishlist={wishlist}
-      />
+            <ProductCarousel
+              title="LUXURY LINE"
+              type="luxury"
+              onAddToCart={handleAddToCart}
+              onToggleWishlist={handleToggleWishlist}
+              wishlist={wishlist}
+              onNavigate={navigate}
+            />
+          </>
+        )}
+
+        {currentView === 'collection' && (
+          <CollectionView
+            collectionId={activeCollectionId}
+            onNavigate={navigate}
+            onAddToCart={handleAddToCart}
+            onToggleWishlist={handleToggleWishlist}
+            wishlist={wishlist}
+          />
+        )}
+
+        {currentView === 'product' && (
+          <ProductDetailView
+            productId={activeProductId}
+            onNavigate={navigate}
+            onAddToCart={handleAddToCart}
+            onToggleWishlist={handleToggleWishlist}
+            wishlist={wishlist}
+          />
+        )}
+      </main>
 
       <Footer />
 
@@ -242,19 +341,22 @@ export default function App() {
                 <span style={{ fontSize: '13px', fontWeight: 600, letterSpacing: '0.1em' }}>TOTAL</span>
                 <span style={{ fontSize: '15px', fontWeight: 700, color: 'var(--gold-dark)' }}>{calculateTotal()}</span>
               </div>
-              <button style={{
-                width: '100%',
-                padding: '18px',
-                background: 'var(--dark)',
-                color: 'var(--white)',
-                border: 'none',
-                fontFamily: 'var(--font-body)',
-                fontWeight: 700,
-                letterSpacing: '0.3em',
-                fontSize: '11px',
-                cursor: 'pointer',
-                transition: 'background var(--transition)'
-              }}>
+              <button
+                onClick={handleCheckout}
+                style={{
+                  width: '100%',
+                  padding: '18px',
+                  background: 'var(--dark)',
+                  color: 'var(--white)',
+                  border: 'none',
+                  fontFamily: 'var(--font-body)',
+                  fontWeight: 700,
+                  letterSpacing: '0.3em',
+                  fontSize: '11px',
+                  cursor: 'pointer',
+                  transition: 'background var(--transition)'
+                }}
+              >
                 PROCEED TO CHECKOUT
               </button>
             </div>

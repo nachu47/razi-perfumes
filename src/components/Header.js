@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import styles from './Header.module.css';
 
-export default function Header({ onSearchOpen, onCartOpen, onCountryOpen, cartCount, wishlistCount = 0 }) {
+export default function Header({ onSearchOpen, onCartOpen, onCountryOpen, cartCount, wishlistCount = 0, onNavigate }) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -34,7 +34,15 @@ export default function Header({ onSearchOpen, onCartOpen, onCountryOpen, cartCo
 
         {/* Center: Logo */}
         <div className={styles.center}>
-          <a href="/" className={styles.logo} aria-label="Razi Perfumes Home">
+          <a 
+            href="/" 
+            className={styles.logo} 
+            aria-label="Razi Perfumes Home"
+            onClick={(e) => {
+              e.preventDefault();
+              onNavigate && onNavigate('home');
+            }}
+          >
             <span className={styles.logoArabic}>رازي</span>
             <span className={styles.logoLatin}>RAZI PERFUMES</span>
           </a>

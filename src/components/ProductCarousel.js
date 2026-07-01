@@ -17,7 +17,7 @@ const allProducts = {
   ]
 };
 
-export default function ProductCarousel({ title, type = 'signature', onAddToCart, onToggleWishlist, wishlist = [] }) {
+export default function ProductCarousel({ title, type = 'signature', onAddToCart, onToggleWishlist, wishlist = [], onNavigate }) {
   const scrollRef = useRef(null);
   const products = allProducts[type] || allProducts.signature;
 
@@ -26,6 +26,16 @@ export default function ProductCarousel({ title, type = 'signature', onAddToCart
       const scrollAmount = direction === 'left' ? -340 : 340;
       scrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
+  };
+
+  const handleBuyNow = (p) => {
+    let msg = `Hello Razi Perfumes! I would like to order:\n\n`;
+    msg += `• ${p.name} (${p.volume}) x 1 - ${p.price}\n\n`;
+    msg += `Please confirm my order. Thank you!`;
+    
+    const encoded = encodeURIComponent(msg);
+    const whatsappUrl = `https://wa.me/919061627236?text=${encoded}`;
+    window.open(whatsappUrl, '_blank');
   };
 
   return (
@@ -54,7 +64,13 @@ export default function ProductCarousel({ title, type = 'signature', onAddToCart
           return (
             <div key={p.id} className={styles.card}>
               <div className={styles.imageWrap}>
-                <img src={p.image} alt={p.name} className={styles.productImage} />
+                <img 
+                  src={p.image} 
+                  alt={p.name} 
+                  className={styles.productImage} 
+                  onClick={() => onNavigate && onNavigate('product', null, p.id)}
+                  style={{ cursor: 'pointer' }}
+                />
                 
                 {/* Wishlist Icon */}
                 <button 
@@ -75,14 +91,14 @@ export default function ProductCarousel({ title, type = 'signature', onAddToCart
                   <button className={styles.actionBtn} onClick={() => onAddToCart(p)}>
                     ADD TO CART
                   </button>
-                  <button className={`${styles.actionBtn} ${styles.buyNowBtn}`} onClick={() => { onAddToCart(p); }}>
+                  <button className={`${styles.actionBtn} ${styles.buyNowBtn}`} onClick={() => handleBuyNow(p)}>
                     BUY NOW
                   </button>
                 </div>
 
                 {/* Mobile Actions Overlay */}
                 <div className={styles.mobileActions}>
-                  <button className={styles.mobileBuyBtn} onClick={() => onAddToCart(p)} aria-label="Buy Now">
+                  <button className={styles.mobileBuyBtn} onClick={() => handleBuyNow(p)} aria-label="Buy Now">
                     ⚡ BUY
                   </button>
                   <button className={styles.mobileAddBtn} onClick={() => onAddToCart(p)} aria-label="Add to Basket">
@@ -91,7 +107,11 @@ export default function ProductCarousel({ title, type = 'signature', onAddToCart
                 </div>
               </div>
 
-              <div className={styles.info}>
+              <div 
+                className={styles.info}
+                onClick={() => onNavigate && onNavigate('product', null, p.id)}
+                style={{ cursor: 'pointer' }}
+              >
                 <h3 className={styles.name}>{p.name}</h3>
                 <p className={styles.volume}>{p.volume}</p>
                 <p className={styles.price}>{p.price}</p>
