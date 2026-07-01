@@ -80,7 +80,7 @@
 }
 
 .logoImg {
-  height: 52px;
+  height: 72px; /* Increased for desktop legibility */
   object-fit: contain;
   transition: transform var(--transition);
 }
@@ -157,7 +157,7 @@
     transform: translateX(-50%);
   }
   .logoImg {
-    height: 42px; /* Smaller height to fit the 64px mobile header perfectly */
+    height: 56px; /* Increased for mobile legibility */
   }
   .shopLabel {
     display: none;
