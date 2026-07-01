@@ -1,0 +1,143 @@
+.section {
+  padding: 100px 60px;
+  background-color: var(--cream);
+  border-bottom: 1px solid var(--light-gray);
+}
+
+.brandIntro {
+  max-width: 800px;
+  margin: 0 auto 80px auto;
+  text-align: center;
+}
+
+.introText {
+  font-family: var(--font-display);
+  font-size: clamp(20px, 3vw, 28px);
+  line-height: 1.6;
+  color: var(--dark);
+  font-weight: 300;
+}
+
+.introText em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--gold-dark);
+}
+
+.sectionTitle {
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  color: var(--dark);
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  max-width: 1480px;
+  margin: 0 auto;
+}
+
+.card {
+  position: relative;
+  aspect-ratio: 1/1.2;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background-color: var(--dark);
+}
+
+.imageWrap {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(18, 15, 13, 0.75) 0%, rgba(18, 15, 13, 0.1) 60%);
+  transition: opacity var(--transition);
+  z-index: 2;
+}
+
+.card:hover .image {
+  transform: scale(1.08);
+}
+
+.card:hover .overlay {
+  background: linear-gradient(to top, rgba(18, 15, 13, 0.9) 0%, rgba(18, 15, 13, 0.2) 60%);
+}
+
+.content {
+  position: relative;
+  z-index: 3;
+  padding: 40px;
+  text-align: center;
+}
+
+.name {
+  font-family: var(--font-heading);
+  font-size: 16px;
+  color: var(--white);
+  letter-spacing: 0.2em;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.explore {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--gold-light);
+  letter-spacing: 0.3em;
+  opacity: 0;
+  transform: translateY(15px);
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  display: inline-block;
+}
+
+.card:hover .explore {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 1024px) {
+  .section {
+    padding: 80px 40px;
+  }
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: 60px 20px;
+  }
+  .brandIntro {
+    margin-bottom: 48px;
+  }
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .explore {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+

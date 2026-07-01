@@ -1,0 +1,255 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&display=swap');
+
+:root {
+  --gold: #CBA600;        /* Gissah Buddha Gold brand color */
+  --gold-light: #E0C13D;
+  --gold-dark: #9E8100;
+  --cream: #F9F5EF;       /* Traditional soft cream */
+  --ivory: #FFFDF9;       /* Light luxury background */
+  --dark: #120F0D;        /* Deep luxury black */
+  --charcoal: #25201C;
+  --mid-gray: #7E756C;
+  --light-gray: #EAE5DF;
+  --white: #FFFFFF;
+  --transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  
+  --font-heading: 'Cinzel', serif;
+  --font-body: 'Montserrat', sans-serif;
+  --font-display: 'Cormorant Garamond', serif;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--ivory);
+  color: var(--dark);
+  line-height: 1.65;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: var(--font-body);
+  transition: all var(--transition);
+}
+
+ul {
+  list-style: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Animations */
+@keyframes rotateClockwise {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulseScale {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.03);
+    opacity: 1;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--cream);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--gold-dark);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold);
+}
+
+/* Global Overlay */
+.overlay-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(18, 15, 13, 0.8);
+  z-index: 999;
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition);
+}
+
+.overlay-backdrop.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* Pre-home splash screen loader */
+.pre-home-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--dark);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+
+.pre-home-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.pre-home-container {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pre-home-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 1px dashed rgba(203, 166, 0, 0.4);
+  border-radius: 50%;
+  animation: rotateClockwise 25s linear infinite;
+}
+
+.pre-home-logo {
+  font-family: var(--font-heading);
+  color: var(--white);
+  font-size: 20px;
+  letter-spacing: 0.4em;
+  text-indent: 0.4em;
+  font-weight: 500;
+  text-align: center;
+  animation: pulseScale 3s ease-in-out infinite;
+}
+
+/* Highlight Section Styles */
+.highlightSection {
+  position: relative;
+  width: 100%;
+  height: 480px;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  border-bottom: 1px solid var(--light-gray);
+}
+
+.highlightOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(18, 15, 13, 0.4);
+  z-index: 1;
+}
+
+.highlightContent {
+  position: relative;
+  z-index: 2;
+  color: var(--white);
+  padding: 0 20px;
+}
+
+.highlightSubtitle {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.35em;
+  color: var(--gold-light);
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+.highlightTitle {
+  font-family: var(--font-heading);
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  margin-bottom: 32px;
+  text-transform: uppercase;
+  text-indent: 0.2em;
+}
+
+.highlightCta {
+  display: inline-block;
+  color: var(--white);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  position: relative;
+  padding: 8px 4px;
+  transition: color var(--transition);
+}
+
+.highlightCta::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--white);
+  transform: scaleX(0.7);
+  transform-origin: center;
+  transition: transform var(--transition), background-color var(--transition);
+}
+
+.highlightCta:hover {
+  color: var(--gold);
+}
+
+.highlightCta:hover::after {
+  transform: scaleX(1);
+  background-color: var(--gold);
+}
+
+@media (max-width: 768px) {
+  .highlightSection {
+    height: 380px;
+    background-attachment: scroll;
+  }
+}
