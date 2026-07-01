@@ -80,6 +80,7 @@
   align-items: center;
   justify-content: center;
   border: 1px solid rgba(18, 15, 13, 0.03);
+  border-radius: 8px;
 }
 
 .productImage {
@@ -155,6 +156,7 @@
   text-transform: uppercase;
   border: none;
   cursor: pointer;
+  border-radius: 4px;
   transition: all var(--transition);
 }
 

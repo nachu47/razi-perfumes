@@ -1,6 +1,8 @@
 'use client';
 import { useState } from 'react';
 import styles from './CountryModal.module.css';
+import logo from '../assets/logo.png';
+import TransparentLogo from './TransparentLogo';
 
 const countries = [
   { code: 'KW', name: 'Kuwait', flag: '🇰🇼', currency: 'KD', domain: 'https://kw.gissah.com' },
@@ -26,8 +28,7 @@ export default function CountryModal({ onClose, onSelectCountry }) {
       <div className={styles.modal}>
         {/* Logo and Branding */}
         <div className={styles.logoContainer}>
-          <span className={styles.logoAr}>رازي</span>
-          <span className={styles.logoEn}>RAZI PERFUMES</span>
+          <TransparentLogo src={logo} invertToWhite={false} alt="Razi Perfumes" className={styles.logoImg} />
         </div>
 
         <h3 className={styles.title}>CHOOSE YOUR LANGUAGE & REGION</h3>

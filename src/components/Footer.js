@@ -1,6 +1,8 @@
 'use client';
 import { useState } from 'react';
 import styles from './Footer.module.css';
+import logo from '../assets/logo.png';
+import TransparentLogo from './TransparentLogo';
 
 export default function Footer() {
   const [activeSection, setActiveSection] = useState(null);
@@ -17,8 +19,7 @@ export default function Footer() {
           {/* Logo & Socials Column */}
           <div className={styles.column}>
             <div className={styles.logoWrap}>
-              <span className={styles.logoAr}>رازي</span>
-              <span className={styles.logoEn}>RAZI PERFUMES</span>
+              <TransparentLogo src={logo} invertToWhite={true} alt="Razi Perfumes" className={styles.footerLogo} />
             </div>
             <p className={styles.newsletterText}>
               A bridge between traditional Arabian heritage and modern, luxurious perfumery.
@@ -70,8 +71,7 @@ export default function Footer() {
           {/* Logo & Socials */}
           <div className={styles.mobileBrand}>
             <div className={styles.logoWrap}>
-              <span className={styles.logoAr}>رازي</span>
-              <span className={styles.logoEn}>RAZI PERFUMES</span>
+              <TransparentLogo src={logo} invertToWhite={true} alt="Razi Perfumes" className={styles.footerLogo} />
             </div>
             <div className={styles.socials}>
               <a href="https://www.instagram.com/raziperfumes/" target="_blank" rel="noopener noreferrer">IG</a>

@@ -8,6 +8,8 @@ import CountryModal from './components/CountryModal';
 import SidebarDrawer from './components/SidebarDrawer';
 import CollectionView from './components/CollectionView';
 import ProductDetailView from './components/ProductDetailView';
+import logo from './assets/logo.png';
+import TransparentLogo from './components/TransparentLogo';
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -158,12 +160,12 @@ export default function App() {
   };
 
   return (
-    <div style={{ background: 'var(--ivory)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ background: 'var(--ivory)', minHeight: '100vh', display: 'flex', flexDirection: 'column', overflowX: 'hidden', width: '100%' }}>
       {/* Splash Screen */}
       <div className={`pre-home-overlay ${!showSplash ? 'hidden' : ''}`}>
         <div className="pre-home-container">
           <div className="pre-home-ring"></div>
-          <h1 className="pre-home-logo">RAZI PERFUMES</h1>
+          <TransparentLogo src={logo} invertToWhite={true} alt="Razi Perfumes" className="pre-home-logo-img" />
         </div>
       </div>
 

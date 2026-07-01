@@ -31,21 +31,9 @@
   gap: 2px;
 }
 
-.logoAr {
-  font-family: var(--font-display);
-  font-size: 32px;
-  line-height: 1;
-  letter-spacing: 0.05em;
-  font-weight: 300;
-}
-
-.logoEn {
-  font-family: var(--font-heading);
-  font-size: 11px;
-  letter-spacing: 0.45em;
-  color: var(--gold);
-  font-weight: 600;
-  text-indent: 0.45em;
+.footerLogo {
+  height: 60px;
+  object-fit: contain;
 }
 
 .newsletterText {

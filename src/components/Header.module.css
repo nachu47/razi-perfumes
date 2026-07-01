@@ -79,22 +79,14 @@
   transform: scale(1.02);
 }
 
-.logoArabic {
-  font-family: var(--font-display);
-  font-size: 28px;
-  color: var(--white);
-  line-height: 1;
-  font-weight: 300;
-  letter-spacing: 0.05em;
+.logoImg {
+  height: 52px;
+  object-fit: contain;
+  transition: transform var(--transition);
 }
 
-.logoLatin {
-  font-family: var(--font-heading);
-  font-size: 11px;
-  color: var(--white);
-  letter-spacing: 0.5em;
-  font-weight: 600;
-  text-indent: 0.5em; /* Offset for center alignment */
+.logo:hover .logoImg {
+  transform: scale(1.02);
 }
 
 /* Right - Icons */
@@ -164,12 +156,8 @@
     left: 50%;
     transform: translateX(-50%);
   }
-  .logoArabic {
-    font-size: 24px; /* Show Arabic logo on mobile */
-    line-height: 1;
-  }
-  .logoLatin {
-    display: none; /* Hide English logo on mobile as requested */
+  .logoImg {
+    height: 42px; /* Smaller height to fit the 64px mobile header perfectly */
   }
   .shopLabel {
     display: none;

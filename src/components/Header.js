@@ -1,6 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
 import styles from './Header.module.css';
+import logo from '../assets/logo.png';
+import TransparentLogo from './TransparentLogo';
 
 export default function Header({ onSearchOpen, onCartOpen, onCountryOpen, cartCount, wishlistCount = 0, onNavigate }) {
   const [scrolled, setScrolled] = useState(false);
@@ -43,8 +45,7 @@ export default function Header({ onSearchOpen, onCartOpen, onCountryOpen, cartCo
               onNavigate && onNavigate('home');
             }}
           >
-            <span className={styles.logoArabic}>رازي</span>
-            <span className={styles.logoLatin}>RAZI PERFUMES</span>
+            <TransparentLogo src={logo} invertToWhite={true} alt="Razi Perfumes" className={styles.logoImg} />
           </a>
         </div>
 

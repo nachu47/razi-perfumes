@@ -27,6 +27,8 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
+  border-radius: 12px;
+  overflow: hidden;
   animation: slideUp 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
@@ -43,22 +45,9 @@
   margin-bottom: 32px;
 }
 
-.logoAr {
-  font-family: var(--font-display);
-  font-size: 40px;
-  color: var(--dark);
-  font-weight: 300;
-  line-height: 1;
-  letter-spacing: 0.05em;
-}
-
-.logoEn {
-  font-family: var(--font-heading);
-  font-size: 13px;
-  letter-spacing: 0.5em;
-  color: var(--gold-dark);
-  font-weight: 500;
-  text-indent: 0.5em; /* Compensate for final letter spacing */
+.logoImg {
+  height: 64px;
+  object-fit: contain;
 }
 
 .title {

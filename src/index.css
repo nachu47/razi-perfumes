@@ -26,7 +26,7 @@
 
 html {
   scroll-behavior: smooth;
-  overflow-x: hidden;
+  overflow-x: hidden !important;
 }
 
 body {
@@ -34,9 +34,16 @@ body {
   background-color: var(--ivory);
   color: var(--dark);
   line-height: 1.65;
-  overflow-x: hidden;
-  max-width: 100%;
+  overflow-x: hidden !important;
+  max-width: 100% !important;
+  width: 100%;
   -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  overflow-x: hidden !important;
+  width: 100% !important;
+  max-width: 100% !important;
 }
 
 a {
@@ -153,14 +160,11 @@ img {
   animation: rotateClockwise 25s linear infinite;
 }
 
-.pre-home-logo {
-  font-family: var(--font-heading);
-  color: var(--white);
-  font-size: 20px;
-  letter-spacing: 0.4em;
-  text-indent: 0.4em;
-  font-weight: 500;
-  text-align: center;
+.pre-home-logo-img {
+  max-width: 130px;
+  max-height: 130px;
+  object-fit: contain;
+  z-index: 10;
   animation: pulseScale 3s ease-in-out infinite;
 }
 
