@@ -165,12 +165,11 @@
     transform: translateX(-50%);
   }
   .logoArabic {
-    display: none; /* Keep only one (English) on mobile as requested */
+    font-size: 24px; /* Show Arabic logo on mobile */
+    line-height: 1;
   }
   .logoLatin {
-    font-size: 9px;
-    letter-spacing: 0.35em;
-    text-indent: 0.35em;
+    display: none; /* Hide English logo on mobile as requested */
   }
   .shopLabel {
     display: none;
