@@ -156,7 +156,9 @@
     "submitReview": "إرسال التقييم",
     "signInToReview": "سجّل الدخول لكتابة تقييم",
     "basedOn": "{count, plural, one {بناءً على تقييم واحد} two {بناءً على تقييمين} other {بناءً على # تقييمات}}",
-    "compareAt": "كان {price}"
+    "compareAt": "كان {price}",
+    "enquire": "استفسر عبر واتساب",
+    "enquireHint": "تحدث معنا عن هذا العطر"
   },
   "cart": {
     "title": "سلة التسوق",

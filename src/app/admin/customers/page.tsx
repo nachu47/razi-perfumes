@@ -12,6 +12,9 @@ interface Customer {
   role: string;
   createdAt: string;
   emailVerified: string | null;
+  lastLoginAt: string | null;
+  loginCount: number;
+  _count: { enquiries: number; productViews: number; wishlistItems: number };
   orders: number;
   spentKWD: number;
 }
@@ -29,7 +32,7 @@ export default function AdminCustomersPage() {
 
   return (
     <>
-      <PageHeader title="Customers" description="Registered accounts. Guest orders appear under Orders." />
+      <PageHeader title="Customers" description="Registered accounts, most recently active first. Open a customer to see their recently viewed products, WhatsApp enquiries, wishlist and orders." />
       <div className={a.toolbar}>
         <input className={a.input} placeholder="Search name, email or phone" value={q} onChange={(e) => setQ(e.target.value)} style={{ minWidth: 260 }} />
       </div>
@@ -45,6 +48,8 @@ export default function AdminCustomersPage() {
                 <th>Customer</th>
                 <th>Phone</th>
                 <th>Joined</th>
+                <th>Last login</th>
+                <th>Activity</th>
                 <th>Orders</th>
                 <th>Spent</th>
                 <th>Role</th>
@@ -63,6 +68,13 @@ export default function AdminCustomersPage() {
                   </td>
                   <td>{c.phone || <span className={a.muted}>—</span>}</td>
                   <td>{new Date(c.createdAt).toLocaleDateString('en-GB')}</td>
+                  <td>
+                    {c.lastLoginAt ? new Date(c.lastLoginAt).toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' }) : <span className={a.muted}>—</span>}
+                    <div className={a.muted}>{c.loginCount} sign-ins</div>
+                  </td>
+                  <td className={a.muted}>
+                    {c._count.productViews} viewed · {c._count.enquiries} enquiries · {c._count.wishlistItems} wishlisted
+                  </td>
                   <td>{c.orders}</td>
                   <td>{kd(c.spentKWD)}</td>
                   <td>

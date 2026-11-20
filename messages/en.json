@@ -156,7 +156,9 @@
     "submitReview": "SUBMIT REVIEW",
     "signInToReview": "Sign in to write a review",
     "basedOn": "{count, plural, one {Based on # review} other {Based on # reviews}}",
-    "compareAt": "Was {price}"
+    "compareAt": "Was {price}",
+    "enquire": "ENQUIRE ON WHATSAPP",
+    "enquireHint": "Chat with us about this fragrance"
   },
   "cart": {
     "title": "YOUR BASKET",

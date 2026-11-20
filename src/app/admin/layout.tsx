@@ -12,9 +12,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const session = await auth();
   // The proxy already guards /admin; this is defense in depth.
   if (session?.user?.role !== 'ADMIN') redirect('/account/login?callbackUrl=/admin&error=admin_only');
-  const [messages, reviews] = await Promise.all([
+  const [messages, reviews, enquiries] = await Promise.all([
     prisma.contactMessage.count({ where: { isRead: false } }),
     prisma.review.count({ where: { isApproved: false } }),
+    prisma.enquiry.count({ where: { status: 'NEW' } }),
   ]);
   return (
     <html lang="en" dir="ltr">
@@ -23,7 +24,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body>
-        <AdminShell user={{ name: session.user.name, email: session.user.email }} counts={{ messages, reviews }}>
+        <AdminShell user={{ name: session.user.name, email: session.user.email }} counts={{ messages, reviews, enquiries }}>
           {children}
         </AdminShell>
       </body>

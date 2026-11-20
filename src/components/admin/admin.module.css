@@ -89,7 +89,8 @@
   margin-top: 4px;
   max-width: 760px;
 }
-.menuToggle {
+.menuToggle,
+.btnGhost.menuToggle {
   display: none;
 }
 
@@ -516,7 +517,8 @@
   .sidebarOpen {
     transform: translateX(0);
   }
-  .menuToggle {
+  .menuToggle,
+  .btnGhost.menuToggle {
     display: inline-flex;
   }
   .main {

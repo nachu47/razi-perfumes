@@ -9,12 +9,13 @@ type ToastFn = (message: string, kind?: 'success' | 'error') => void;
 const ToastContext = createContext<ToastFn>(() => {});
 export const useAdminToast = () => useContext(ToastContext);
 
-const NAV: { group: string; links: { href: string; label: string; badge?: 'messages' | 'reviews' }[] }[] = [
+const NAV: { group: string; links: { href: string; label: string; badge?: 'messages' | 'reviews' | 'enquiries' }[] }[] = [
   { group: 'OVERVIEW', links: [{ href: '/admin', label: 'Dashboard' }] },
   {
     group: 'SALES',
     links: [
       { href: '/admin/orders', label: 'Orders' },
+      { href: '/admin/enquiries', label: 'WhatsApp enquiries', badge: 'enquiries' },
       { href: '/admin/customers', label: 'Customers' },
       { href: '/admin/resources/coupons', label: 'Coupons' },
     ],
@@ -32,6 +33,7 @@ const NAV: { group: string; links: { href: string; label: string; badge?: 'messa
     links: [
       { href: '/admin/resources/shipping', label: 'Shipping rates' },
       { href: '/admin/resources/currencies', label: 'Currency rates' },
+      { href: '/admin/settings', label: 'WhatsApp & payments' },
     ],
   },
   {
@@ -51,7 +53,7 @@ const NAV: { group: string; links: { href: string; label: string; badge?: 'messa
   },
 ];
 
-export default function AdminShell({ children, user, counts }: { children: ReactNode; user: { name?: string | null; email?: string | null }; counts: { messages: number; reviews: number } }) {
+export default function AdminShell({ children, user, counts }: { children: ReactNode; user: { name?: string | null; email?: string | null }; counts: { messages: number; reviews: number; enquiries: number } }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [toasts, setToasts] = useState<{ id: number; message: string; kind: string }[]>([]);

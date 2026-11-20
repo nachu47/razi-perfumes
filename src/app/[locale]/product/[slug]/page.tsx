@@ -7,6 +7,7 @@ import { getProductBySlug, listProducts } from '@/lib/catalog';
 import { getRates, getVisitorCountry } from '@/lib/currency';
 import { convertFromKWD } from '@/lib/money';
 import { absoluteUrl, pick } from '@/lib/site';
+import { getStoreSettings, whatsappActive } from '@/lib/settings';
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
@@ -38,10 +39,11 @@ export default async function ProductPage({ params }: Props) {
   if (!product) notFound();
 
   const t = await getTranslations('product');
-  const [related, country, rates] = await Promise.all([
+  const [related, country, rates, settings] = await Promise.all([
     listProducts({ collection: product.collection?.slug, excludeId: product.id, pageSize: 8, sort: 'best-selling' }),
     getVisitorCountry(),
     getRates(),
+    getStoreSettings(),
   ]);
 
   // JSON-LD Product schema (offers in the visitor's currency)
@@ -72,7 +74,7 @@ export default async function ProductPage({ params }: Props) {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
-      <ProductDetail product={product} />
+      <ProductDetail product={product} whatsappEnabled={whatsappActive(settings)} />
       {related.items.length > 0 && <ProductCarousel title={t('related')} products={related.items} />}
     </>
   );

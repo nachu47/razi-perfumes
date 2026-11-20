@@ -57,6 +57,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       : []),
   ],
   events: {
+    // Login history for the admin customer view
+    async signIn({ user }) {
+      if (user.id) {
+        await prisma.user
+          .update({ where: { id: user.id }, data: { lastLoginAt: new Date(), loginCount: { increment: 1 } } })
+          .catch(() => {});
+      }
+    },
     // Google users are verified by Google
     async linkAccount({ user }) {
       if (user.id) await prisma.user.update({ where: { id: user.id }, data: { emailVerified: new Date() } });

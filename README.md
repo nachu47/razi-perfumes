@@ -17,11 +17,12 @@ The original design is unchanged: fonts (Cinzel, Montserrat, Cormorant Garamond)
 | Buy Now | Goes straight to checkout with only that item. The basket is left untouched |
 | Wishlist | Heart on every product card and product page, a badge count, a `/wishlist` page and "move to basket". Guest wishlists merge on login |
 | Checkout | Guest or signed-in checkout, GCC address fields, saved addresses, shipping fee per country with a free-shipping threshold, coupons, and prices always recalculated on the server. Cash on Delivery plus a pluggable online gateway |
-| Payments | Online orders are confirmed by a signed webhook. Stock is deducted only when payment succeeds or a Cash on Delivery order is confirmed. Includes success and failure pages with retry or "switch to Cash on Delivery" |
+| Payments | **MyFatoorah** (KNET, Visa/Mastercard, mada, Apple Pay) plus Cash on Delivery. Online orders are confirmed by a webhook that is double-checked with MyFatoorah's API. Stock is deducted only when payment succeeds or a Cash on Delivery order is confirmed. Includes success and failure pages with retry or "switch to Cash on Delivery" |
 | Account | Register, verify email, log in and out, forgot and reset password, Google login, profile, password, address book, order history with tracking timeline |
 | Currency | Country selector (KW, SA, AE, QA, OM, BH). Prices are converted using database rates with correct decimals (KD/BHD/OMR use 3, SAR/AED/QAR use 2). Checkout charges in the selected currency |
 | Language | English at `/…` and Arabic RTL at `/ar/…`. Translates all UI text and all database content |
 | Content | About, Our Story, Terms, Shipping, Privacy, Return pages, Locations and the Contact form (saved to the database and emailed to admin). Newsletter signup in the footer and a custom 404 page |
+| WhatsApp & CRM | "Enquire on WhatsApp" button on product pages, with the WhatsApp number and message set in Admin → WhatsApp & payments. Every enquiry is saved (Admin → WhatsApp enquiries) with status and notes. Admin customer pages show login history, recently viewed products, enquiries, wishlist, orders and addresses. Guest activity is linked to the customer's account when they sign in |
 | Admin (`/admin`) | Dashboard (sales, revenue chart, low stock, recent orders). Products with sizes, stock and images. Collections, orders (status, mark Cash on Delivery as paid, refund, invoice), customers, coupons, shipping rates, currency rates, hero slides, content pages, locations, reviews, messages, newsletter CSV export |
 | SEO | Page titles, descriptions and share images per page, English/Arabic language links, product structured data for Google, `sitemap.xml` and `robots.txt` |
 | Security | Input validation on every API, rate limiting, blocking of cross-site requests, admin protection in proxy and API, bcrypt passwords, hashed reset tokens, signed payment webhooks, httpOnly cookies, upload file-type checking |
@@ -62,30 +63,55 @@ The seed can be run again safely. It loads the 7 collections, 16 products with s
 - **Images:** with no Cloudinary keys, admin uploads are saved to `public/uploads/`.
 - **Google login:** the button only appears once `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` are set.
 
-## 2. Testing payments in sandbox
+## 2. Payments (MyFatoorah)
 
-Set `PAYMENT_PROVIDER="mock"`. Checkout then offers KNET, Card and Apple Pay as well as Cash on Delivery:
+Set `PAYMENT_PROVIDER` in `.env`:
 
-1. Choose Card, then **PAY**. You're redirected to the sandbox payment page.
-2. **Simulate declined**: you land on `/order/failed` with "Try again" and "Switch to Cash on Delivery".
-3. **Simulate successful**: a signed webhook marks the order PAID, stock is deducted, the cart is emptied, both emails are sent and you land on `/order/success`.
+| Value | Checkout offers |
+|---|---|
+| `myfatoorah` | Cash on Delivery, KNET, Card (Visa/Mastercard, with mada and AMEX as fallbacks), Apple Pay |
+| `mock` | Cash on Delivery plus a built-in sandbox page (local testing only; disabled in production) |
+| `none` | Cash on Delivery only |
 
-The sandbox gateway is disabled automatically in production. Overriding that with `ALLOW_MOCK_PAYMENTS=true` is for staging only.
+**How it works:**
+1. At checkout the server creates a MyFatoorah invoice for the order total, in the customer's currency.
+2. The customer is redirected to MyFatoorah's secure payment page.
+3. MyFatoorah sends them back to `/api/payments/callback`, and the server confirms the result with MyFatoorah's `GetPaymentStatus` API.
+4. Webhooks to `/api/payments/webhook` are also re-checked against the API, so a forged webhook can't mark an order as paid.
+5. Stock is deducted and the confirmation emails are sent only once payment is confirmed.
 
-### Adding MyFatoorah or Tap (when you choose one)
+### Test mode (sandbox)
 
-The gateway sits behind one interface: `src/lib/payments/types.ts` → `PaymentProvider`.
+```
+PAYMENT_PROVIDER="myfatoorah"
+MYFATOORAH_BASE_URL="https://apitest.myfatoorah.com"
+MYFATOORAH_API_KEY="SK_KWT_vVZlnnAqu8jRByOWaRPNId4ShzEDNt256dvnjebuyzo52dXjAfRx2ixW5umjWSUx"   # MyFatoorah's public test token
+```
 
-1. Create `src/lib/payments/myfatoorah.ts` (or `tap.ts`) implementing three functions:
-   - `createPayment()`: create the invoice and return the gateway's payment URL.
-   - `parseWebhook()`: verify the gateway signature.
-   - `fetchStatus()`: check the payment status if the customer returns before the webhook arrives.
-2. Register it in `src/lib/payments/index.ts` and set `PAYMENT_PROVIDER=myfatoorah`, plus that gateway's keys.
-3. In the gateway dashboard set:
-   - Callback / redirect URL: `https://YOUR-DOMAIN/api/payments/callback?order={order}&token={token}`. `createPayment` builds this per order.
-   - Webhook URL: `https://YOUR-DOMAIN/api/payments/webhook`
+MyFatoorah's test cards are listed at https://docs.myfatoorah.com/docs/test-cards. For example:
+- Mastercard `5123450000000008`, expiry 01/39, CVV 100
+- KNET `8888880000000001`, expiry 09/30, any 4-digit PIN
 
-Nothing else changes: checkout, retry, stock, emails and admin already handle online payments.
+**Localhost doesn't work with MyFatoorah.** It rejects `localhost` callback URLs, so test real MyFatoorah payments on a Vercel preview deployment, or through a public tunnel with `NEXT_PUBLIC_SITE_URL` set to the tunnel address. For quick local testing, use `PAYMENT_PROVIDER="mock"`.
+
+### Going live
+1. In your MyFatoorah portal, create a live API token and enable KNET, cards and Apple Pay.
+2. Set `MYFATOORAH_API_KEY` to the live token, and `MYFATOORAH_BASE_URL` to your country's address:
+   - Kuwait, Bahrain or Oman: `https://api.myfatoorah.com`
+   - Saudi Arabia: `https://api-sa.myfatoorah.com`
+   - UAE: `https://api-ae.myfatoorah.com`
+   - Qatar: `https://api-qa.myfatoorah.com`
+3. In the portal, under Integration settings → Webhook, set the URL to `https://YOUR-DOMAIN/api/payments/webhook` (event: Transaction status changed).
+4. Apple Pay also needs domain verification in the MyFatoorah portal.
+5. Admin → WhatsApp & payments shows which gateway is active and whether it's in TEST or LIVE mode.
+
+## 2b. WhatsApp enquiries & customer activity
+
+- **Set your number:** Admin → **WhatsApp & payments**. Enter the full number with country code, e.g. `96551234567`. You can also edit the opening message in English and Arabic.
+- **What customers see:** an **Enquire on WhatsApp** button on each product page. It opens WhatsApp with the product name, the selected size and a link to the product.
+- **What you see:** each click is saved under Admin → **WhatsApp enquiries**, with the customer's details (or "Guest"), last login and how many products they've viewed. You can mark it Contacted or Closed, add notes, or reply on WhatsApp in one click.
+- **Customer profiles:** Admin → **Customers** → a customer shows last login and sign-in count, recently viewed products (with view counts), enquiries, wishlist, orders and addresses.
+- **Guests:** their views and enquiries are tracked with an anonymous cookie, and linked to their account automatically when they register or sign in.
 
 ## 3. Deploy to Vercel
 
@@ -147,6 +173,9 @@ These were tested end to end against a local Postgres. The checks used an automa
 - [x] Admin: login, every section loads, order status change emails the customer, product toggles work, coupons can be created, newsletter CSV exports, non-admins are blocked (401/403).
 - [x] `npm run build` passes. The production server answers on all routes, with `robots.txt`, `sitemap.xml` (with English/Arabic links) and product structured data.
 
-Not yet tested against real external services, because no keys have been set up yet: Resend/SMTP delivery, Cloudinary uploads, Google OAuth, and a real KNET/card gateway (MyFatoorah or Tap still to be chosen).
+- [x] **MyFatoorah sandbox:** invoices created for KNET, Card, Apple Pay and SAR. A real test-card payment (Mastercard 3-D Secure) completed, was redirected back to `/api/payments/callback`, and was confirmed as PAID by the integration.
+- [x] **WhatsApp:** admin sets the number; a guest enquiry opens WhatsApp with the product, size and link; the enquiry is saved; after sign-up, the guest's views and enquiry are linked to the account; admin marks it contacted; the customer page shows last login, recently viewed and enquiries.
+
+Not yet tested against real external services, because no keys have been set up yet: Resend/SMTP delivery, Cloudinary uploads, Google OAuth, a live (non-sandbox) MyFatoorah account and Apple Pay domain verification. A declined MyFatoorah card couldn't be tested because the sandbox's card form rejects MyFatoorah's documented decline card. Unpaid invoices are correctly reported as pending and sent to the retry page.
 
 Rate limiting runs in memory on each server instance. For strict limits across all instances, use Upstash Redis behind the same `rateLimit()` function.

@@ -41,6 +41,10 @@ export default async function AdminDashboard() {
     prisma.order.findMany({ orderBy: { createdAt: 'desc' }, take: 8 }),
     prisma.user.count({ where: { role: 'CUSTOMER' } }),
   ]);
+  const [enquiries, newEnquiries] = await Promise.all([
+    prisma.enquiry.findMany({ orderBy: { createdAt: 'desc' }, take: 6, include: { user: { select: { id: true, name: true, email: true } } } }),
+    prisma.enquiry.count({ where: { status: 'NEW' } }),
+  ]);
 
   // Revenue per day for the chart (KWD)
   const days = Array.from({ length: 30 }, (_, i) => {
@@ -86,7 +90,7 @@ export default async function AdminDashboard() {
         <div className={a.stat}>
           <div className={a.statLabel}>To fulfil</div>
           <div className={a.statValue}>{pendingCount}</div>
-          <div className={a.muted}>{customers} registered customers</div>
+          <div className={a.muted}>{customers} registered customers · {newEnquiries} new enquiries</div>
         </div>
       </div>
 
@@ -185,6 +189,38 @@ export default async function AdminDashboard() {
             </table>
           )}
         </div>
+      </div>
+
+      <div className={a.panel}>
+        <div className={a.panelTitle}>
+          Latest WhatsApp enquiries <Link href="/admin/enquiries" className={a.link}>View all →</Link>
+        </div>
+        {enquiries.length === 0 ? (
+          <p className={a.empty}>No enquiries yet.</p>
+        ) : (
+          <table className={a.table}>
+            <tbody>
+              {enquiries.map((e) => (
+                <tr key={e.id}>
+                  <td>
+                    <strong>{e.productName}</strong> {e.variantLabel && <span className={a.muted}>({e.variantLabel})</span>}
+                  </td>
+                  <td>
+                    {e.user ? (
+                      <Link href={`/admin/customers/${e.user.id}`} className={a.link}>
+                        {e.user.name || e.user.email}
+                      </Link>
+                    ) : (
+                      <span className={a.chip}>GUEST</span>
+                    )}
+                  </td>
+                  <td className={a.muted}>{e.createdAt.toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' })}</td>
+                  <td style={{ textAlign: 'end' }}>{chip(e.status)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </>
   );

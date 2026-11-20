@@ -26,6 +26,7 @@ export async function resolveWishlistOwner(create: boolean): Promise<WishlistOwn
         });
       }
       await prisma.wishlistItem.deleteMany({ where: { guestId } });
+      await mergeGuestActivity(guestId, user.id);
       store.delete(GUEST_COOKIE);
     }
     return { userId: user.id };
@@ -41,6 +42,28 @@ export async function resolveWishlistOwner(create: boolean): Promise<WishlistOwn
     maxAge: 60 * 60 * 24 * 180,
   });
   return { guestId: id };
+}
+
+/** On sign-in, attach the guest's recently viewed products and WhatsApp enquiries to the customer. */
+async function mergeGuestActivity(guestId: string, userId: string) {
+  const views = await prisma.productView.findMany({ where: { guestId } });
+  for (const v of views) {
+    const existing = await prisma.productView.findUnique({ where: { userId_productId: { userId, productId: v.productId } } });
+    if (existing) {
+      await prisma.productView.update({
+        where: { id: existing.id },
+        data: { viewCount: existing.viewCount + v.viewCount, lastViewedAt: v.lastViewedAt > existing.lastViewedAt ? v.lastViewedAt : existing.lastViewedAt },
+      });
+    } else {
+      await prisma.productView.create({ data: { userId, productId: v.productId, viewCount: v.viewCount, firstViewAt: v.firstViewAt, lastViewedAt: v.lastViewedAt } });
+    }
+  }
+  await prisma.productView.deleteMany({ where: { guestId } });
+  const user = await prisma.user.findUnique({ where: { id: userId }, select: { name: true, email: true, phone: true } });
+  await prisma.enquiry.updateMany({
+    where: { guestId },
+    data: { userId, guestId: null, name: user?.name, email: user?.email, phone: user?.phone },
+  });
 }
 
 export async function wishlistProductIds(owner: WishlistOwner | null): Promise<string[]> {
