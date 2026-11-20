@@ -3,11 +3,35 @@ import { useEffect, useState } from 'react';
 import logo from '../assets/logo.png';
 import TransparentLogo from './TransparentLogo';
 
-// The original pre-home splash (ring + pulsing logo), shown on each full page load.
+const KEY = 'razi_splash_seen';
+
+/**
+ * Runs before first paint: if the splash was already shown in this browser session,
+ * hide it immediately so full page loads (e.g. returning from the payment page)
+ * don't replay the 2.5s intro.
+ */
+export const splashBootScript = `try{if(sessionStorage.getItem('${KEY}'))document.documentElement.setAttribute('data-splash-seen','1')}catch(e){}`;
+
+// The original pre-home splash (ring + pulsing logo), shown once per browser session.
 export default function Splash() {
   const [show, setShow] = useState(true);
   useEffect(() => {
-    const timer = setTimeout(() => setShow(false), 2500);
+    try {
+      if (sessionStorage.getItem(KEY)) {
+        setShow(false);
+        return;
+      }
+    } catch {
+      /* storage blocked — just play the splash */
+    }
+    const timer = setTimeout(() => {
+      setShow(false);
+      try {
+        sessionStorage.setItem(KEY, '1');
+      } catch {
+        /* ignore */
+      }
+    }, 2500);
     return () => clearTimeout(timer);
   }, []);
   return (

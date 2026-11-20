@@ -14,7 +14,7 @@ import StoreProvider from '@/components/providers/StoreProvider';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CountryModal from '@/components/CountryModal';
-import Splash from '@/components/Splash';
+import Splash, { splashBootScript } from '@/components/Splash';
 import { CartDrawer, SearchDrawer, ShopMenuDrawer } from '@/components/Drawers';
 import '../globals.css';
 
@@ -65,10 +65,11 @@ export default async function LocaleLayout({ children, params }: { children: Rea
     : null;
 
   return (
-    <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'}>
+    <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'} suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <script dangerouslySetInnerHTML={{ __html: splashBootScript }} />
       </head>
       <body>
         <NextIntlClientProvider locale={locale} messages={messages}>

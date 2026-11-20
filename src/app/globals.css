@@ -331,3 +331,14 @@ img {
   animation: spin 0.8s linear infinite;
   margin: 40px auto;
 }
+
+@media print {
+  .noPrint {
+    display: none !important;
+  }
+}
+
+/* Splash already shown this session (set by an inline script before paint) */
+html[data-splash-seen] .pre-home-overlay {
+  display: none;
+}
