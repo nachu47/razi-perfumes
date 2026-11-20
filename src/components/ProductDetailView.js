@@ -197,6 +197,7 @@ export default function ProductDetailView({ productId, onNavigate, onAddToCart, 
               </button>
             </div>
           </div>
+        </div>
       </div>
     </div>
   );
