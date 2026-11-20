@@ -164,3 +164,9 @@
   }
 }
 
+
+/* RTL */
+:global([dir='rtl']) .chevron {
+  right: auto;
+  left: 20px;
+}

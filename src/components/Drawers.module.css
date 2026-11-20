@@ -1,0 +1,236 @@
+/* Styles for the shop menu, search and basket drawers — taken from the original inline styles */
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.menuLink,
+.menuLinkStrong {
+  font-family: var(--font-heading);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--charcoal);
+  padding: 12px 0;
+  border-bottom: 1px solid var(--light-gray);
+  transition: color var(--transition), padding var(--transition);
+}
+.menuLinkStrong {
+  font-weight: 700;
+  color: var(--dark);
+}
+.menuLink:hover,
+.menuLinkStrong:hover {
+  color: var(--gold-dark);
+  padding-inline-start: 6px;
+}
+.menuHeading {
+  margin-top: 24px;
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  color: var(--mid-gray);
+}
+
+.searchInput {
+  padding: 18px 24px;
+  border: 1px solid var(--light-gray);
+  font-family: var(--font-body);
+  font-size: 13px;
+  outline: none;
+  width: 100%;
+  background-color: var(--white);
+  border-radius: 4px;
+}
+.searchInput:focus {
+  border-color: var(--gold-dark);
+}
+.hint {
+  font-size: 13px;
+  color: var(--mid-gray);
+  font-style: italic;
+  font-family: var(--font-display);
+}
+.suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.suggestion {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--light-gray);
+}
+.suggestion:hover .itemName {
+  color: var(--gold-dark);
+}
+.thumb {
+  width: 56px;
+  height: 70px;
+  background: var(--cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.thumb img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+}
+.itemName {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: color var(--transition);
+}
+.itemPrice {
+  display: block;
+  font-size: 12px;
+  color: var(--gold-dark);
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.primaryBtn {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  background: var(--dark);
+  color: var(--white);
+  text-align: center;
+  font-family: var(--font-body);
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  font-size: 11px;
+  border-radius: 4px;
+  transition: background var(--transition);
+}
+.primaryBtn:hover {
+  background: var(--gold-dark);
+}
+
+.line {
+  display: flex;
+  gap: 16px;
+  border-bottom: 1px solid var(--light-gray);
+  padding-bottom: 20px;
+}
+.lineImage {
+  width: 80px;
+  height: 100px;
+  background-color: var(--cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.lineImage img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+}
+.lineName {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: var(--font-heading);
+}
+.lineSize {
+  font-size: 12px;
+  color: var(--mid-gray);
+  font-style: italic;
+  font-family: var(--font-display);
+  margin-top: 2px;
+}
+.linePrice {
+  font-size: 13px;
+  color: var(--gold-dark);
+  font-weight: 600;
+}
+.warn {
+  font-size: 11px;
+  color: #b03a2e;
+  margin-top: 4px;
+  font-weight: 600;
+}
+.remove {
+  font-size: 12px;
+  color: var(--mid-gray);
+  cursor: pointer;
+}
+.remove:hover {
+  color: var(--dark);
+}
+.qty {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--light-gray);
+  background: var(--white);
+  border-radius: 4px;
+}
+.qty button {
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.qty button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.qty span {
+  padding: 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  min-width: 22px;
+  text-align: center;
+}
+.row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-bottom: 10px;
+  color: var(--charcoal);
+}
+.checkoutBtn {
+  width: 100%;
+  padding: 18px;
+  background: var(--dark);
+  color: var(--white);
+  border: none;
+  font-family: var(--font-body);
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  font-size: 11px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background var(--transition);
+}
+.checkoutBtn:hover {
+  background: var(--gold-dark);
+}
+.secondaryLink {
+  display: block;
+  text-align: center;
+  margin-top: 14px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  color: var(--mid-gray);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.secondaryLink:hover {
+  color: var(--dark);
+}

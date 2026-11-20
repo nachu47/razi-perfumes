@@ -273,3 +273,67 @@
     justify-content: center;
   }
 }
+
+/* RTL */
+:global([dir='rtl']) .selectChevron {
+  right: auto;
+  left: 14px;
+}
+
+/* Newsletter signup */
+.newsletterForm {
+  margin-top: 28px;
+  max-width: 340px;
+  display: block;
+}
+.newsletterForm .linkTitle {
+  display: block;
+  margin-bottom: 8px;
+}
+.newsletterHint {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-style: italic;
+  color: var(--mid-gray);
+  margin-bottom: 12px;
+}
+.newsletterRow {
+  display: flex;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.newsletterInput {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--white);
+  padding: 12px 14px;
+  font-family: var(--font-body);
+  font-size: 12px;
+}
+.newsletterInput::placeholder {
+  color: var(--mid-gray);
+}
+.newsletterBtn {
+  background: var(--gold);
+  color: var(--dark);
+  padding: 0 16px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+}
+.newsletterBtn:hover {
+  background: var(--gold-light);
+}
+.newsletterBtn:disabled {
+  opacity: 0.6;
+}
+.mobileNewsletter {
+  padding: 24px 0 8px;
+}
+.footerSelect option {
+  color: var(--dark);
+}

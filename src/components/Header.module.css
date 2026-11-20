@@ -170,3 +170,10 @@
   }
 }
 
+
+/* RTL */
+:global([dir='rtl']) .cartBadge,
+:global([dir='rtl']) .wishlistBadge {
+  right: auto;
+  left: -4px;
+}

@@ -115,6 +115,7 @@ export interface ProductFilters {
   page?: number;
   pageSize?: number;
   excludeId?: string;
+  ids?: string[];
 }
 
 function buildWhere(f: ProductFilters): Prisma.ProductWhereInput {
@@ -125,6 +126,7 @@ function buildWhere(f: ProductFilters): Prisma.ProductWhereInput {
   if (f.recommended) where.isRecommended = true;
   if (f.gender) where.gender = f.gender;
   if (f.excludeId) where.id = { not: f.excludeId };
+  if (f.ids) where.id = { in: f.ids };
   if (f.note) where.noteTags = { has: f.note.toLowerCase() };
   if (f.sizeMl) where.variants = { some: { sizeMl: f.sizeMl } };
   if (f.minKWD !== undefined || f.maxKWD !== undefined) {

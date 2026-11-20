@@ -279,3 +279,9 @@
   }
 }
 
+
+/* RTL */
+:global([dir='rtl']) .wishlistIcon {
+  right: auto;
+  left: 16px;
+}
