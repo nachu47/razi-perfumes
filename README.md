@@ -4,7 +4,7 @@ Full-stack e-commerce store for Razi Perfumes / رازي, serving Kuwait and the
 
 **Stack:** Next.js 16 (App Router), TypeScript, PostgreSQL with Prisma 6, Auth.js v5, next-intl (English + Arabic RTL), Zod, Resend/SMTP, Cloudinary. It deploys to Vercel.
 
-The original design is unchanged: fonts (Cinzel, Montserrat, Cormorant Garamond), the gold/ivory palette, CSS Modules, the splash screen and every animation.
+The original design is kept: fonts (Cinzel, Montserrat, Cormorant Garamond), the gold/ivory palette, CSS Modules and the animations. The one new design element is the splash screen, where the logo fills with liquid gold.
 
 ---
 
@@ -25,6 +25,7 @@ The original design is unchanged: fonts (Cinzel, Montserrat, Cormorant Garamond)
 | WhatsApp & CRM | "Enquire on WhatsApp" button on product pages, with the WhatsApp number and message set in Admin → WhatsApp & payments. Every enquiry is saved (Admin → WhatsApp enquiries) with status and notes. Admin customer pages show login history, recently viewed products, enquiries, wishlist, orders and addresses. Guest activity is linked to the customer's account when they sign in |
 | Admin (`/admin`) | Dashboard (sales, revenue chart, low stock, recent orders). Products with sizes, stock and images. Collections, orders (status, mark Cash on Delivery as paid, refund, invoice), customers, coupons, shipping rates, currency rates, hero slides, content pages, locations, reviews, messages, newsletter CSV export |
 | SEO | Page titles, descriptions and share images per page, English/Arabic language links, product structured data for Google, `sitemap.xml` and `robots.txt` |
+| Splash screen | The Razi logo fills with liquid gold: rising waves, bubbles, a 0–100% meter, then a shine. It plays once per browser session (a reload skips it) and stays still for visitors who have reduced motion turned on |
 | Security | Input validation on every API, rate limiting, blocking of cross-site requests, admin protection in proxy and API, bcrypt passwords, hashed reset tokens, signed payment webhooks, httpOnly cookies, upload file-type checking |
 
 ---
@@ -58,7 +59,31 @@ npm run dev          # http://localhost:3000   (admin: http://localhost:3000/adm
 
 The seed can be run again safely. It loads the 7 collections, 16 products with sizes and stock, GCC shipping rates, currency rates, the 6 policy pages, 3 hero slides, a sample location, the `WELCOME10` coupon (10% off) and the admin user.
 
-**Without external accounts**, everything still works in development:
+### Test accounts (local development)
+
+| Role | Sign in at | Email | Password |
+|---|---|---|---|
+| Admin | `/admin` | `admin@raziperfumes.com` | the `ADMIN_PASSWORD` from your `.env` (local default `RaziAdmin!2026`) |
+| Customer | `/account/login` | `customer@raziperfumes.com` | `Customer!2026` |
+
+The admin account is created by `npm run db:seed` from `ADMIN_EMAIL` / `ADMIN_PASSWORD`. The customer account was registered by hand for testing; register more at `/account/register`. Use strong passwords in production; never reuse these.
+
+### Handy commands
+
+| Command | What it does |
+|---|---|
+| `npm run dev` | Start the site at http://localhost:3000 |
+| `npm run db:studio` | Browse and edit the database like a spreadsheet (Prisma Studio) |
+| `npm run db:migrate` | Apply schema changes to the database (after editing `prisma/schema.prisma`) |
+| `npm run db:seed` | Load or refresh the starting data (safe to re-run) |
+| `npm run lint` | Type-check the whole project |
+| `npm run build` | Production build, the same one Vercel runs |
+
+On Windows, stop `npm run dev` before running `npm run db:migrate` or `npm run build`: the running dev server locks Prisma's engine file, and `prisma generate` then fails with `EPERM`. Restart the dev server after any schema change.
+
+### Without external accounts
+
+Everything still works in development:
 - **Email:** with no `RESEND_API_KEY` or `SMTP_HOST`, every email (order confirmation, password reset and others) is printed in the terminal.
 - **Images:** with no Cloudinary keys, admin uploads are saved to `public/uploads/`.
 - **Google login:** the button only appears once `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` are set.
@@ -136,6 +161,18 @@ MyFatoorah's test cards are listed at https://docs.myfatoorah.com/docs/test-card
 
 ## 4. Project structure
 
+### Where the backend lives
+
+| Part | Location | What's in it |
+|---|---|---|
+| Admin panel (visual backend) | `/admin` in the browser, code in `src/app/admin/` | Everything the store team manages |
+| API endpoints | `src/app/api/` | Cart, checkout, payments, accounts, enquiries, and everything under `/api/admin/` |
+| Business logic | `src/lib/` | `pricing.ts` (all totals), `orders.ts` (create, confirm, stock), `cart.ts`, `wishlist.ts` (also links guest activity to accounts), `payments/myfatoorah.ts`, `email.ts` + `email-templates.ts`, `settings.ts` (WhatsApp), `catalog.ts` |
+| Database | `prisma/schema.prisma` (tables), `prisma/migrations/` (history), `prisma/seed.ts` (starting data) | Data lives in PostgreSQL: Docker locally, Neon or Supabase in production |
+| Login & security | `src/auth.ts`, `src/proxy.ts` | Sign-in, admin protection, language routing, cross-site request blocking |
+
+### Folder map
+
 ```
 prisma/                 schema.prisma, migrations/, seed.ts
 messages/               en.json, ar.json — all UI text
@@ -172,10 +209,24 @@ These were tested end to end against a local Postgres. The checks used an automa
 - [x] All footer links lead to real pages. Custom 404 page.
 - [x] Admin: login, every section loads, order status change emails the customer, product toggles work, coupons can be created, newsletter CSV exports, non-admins are blocked (401/403).
 - [x] `npm run build` passes. The production server answers on all routes, with `robots.txt`, `sitemap.xml` (with English/Arabic links) and product structured data.
-
 - [x] **MyFatoorah sandbox:** invoices created for KNET, Card, Apple Pay and SAR. A real test-card payment (Mastercard 3-D Secure) completed, was redirected back to `/api/payments/callback`, and was confirmed as PAID by the integration.
+- [x] **Splash:** the logo fills with gold and the meter reaches 100%, then the overlay hides; a reload in the same session skips it; no page errors.
 - [x] **WhatsApp:** admin sets the number; a guest enquiry opens WhatsApp with the product, size and link; the enquiry is saved; after sign-up, the guest's views and enquiry are linked to the account; admin marks it contacted; the customer page shows last login, recently viewed and enquiries.
 
 Not yet tested against real external services, because no keys have been set up yet: Resend/SMTP delivery, Cloudinary uploads, Google OAuth, a live (non-sandbox) MyFatoorah account and Apple Pay domain verification. A declined MyFatoorah card couldn't be tested because the sandbox's card form rejects MyFatoorah's documented decline card. Unpaid invoices are correctly reported as pending and sent to the retry page.
 
 Rate limiting runs in memory on each server instance. For strict limits across all instances, use Upstash Redis behind the same `rateLimit()` function.
+
+## 6. Project status
+
+| Item | Status |
+|---|---|
+| Backend, admin panel, storefront functionality | Done and tested locally |
+| MyFatoorah integration | Done; tested in the sandbox. Needs the client's live API key |
+| WhatsApp enquiries + customer activity | Done. Set the real number in Admin → WhatsApp & payments |
+| Splash screen redesign | Done |
+| Visual redesign of the other pages | Next |
+| Deployment to Vercel | Waiting on a database, email (Resend), image storage (Cloudinary) and the domain |
+| Content | Waiting on the client: product photos (current images are temporary placeholders loaded from `kw.gissah.com`), prices and stock, shipping fees, policy texts, store location |
+
+The work is on the Git branch `feature/full-backend`. `main`, which the current live site deploys from, has not been changed. Merge into `main` only after the Vercel environment variables are set (section 3).
