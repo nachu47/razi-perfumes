@@ -1,0 +1,173 @@
+/* "Liquid gold" splash — the logo fills with gold like a perfume bottle. */
+
+.stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 34px;
+}
+
+/* Soft ambient glow behind the logo that strengthens as it fills */
+.stage::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 420px;
+  height: 420px;
+  transform: translate(-50%, -62%);
+  background: radial-gradient(circle, rgba(203, 166, 0, 0.22) 0%, rgba(203, 166, 0, 0) 65%);
+  opacity: 0;
+  animation: glowIn var(--fill-ms) ease-in forwards;
+  pointer-events: none;
+}
+
+.logoWrap {
+  position: relative;
+  width: min(260px, 62vw);
+  aspect-ratio: 432 / 338;
+  filter: drop-shadow(0 0 0 rgba(224, 193, 61, 0));
+  animation: logoGlow var(--fill-ms) ease-in forwards;
+}
+
+/* Everything inside is cut to the logo's shape via CSS mask */
+.mask {
+  position: absolute;
+  inset: 0;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  overflow: hidden;
+}
+
+/* The empty "glass" — a faint silhouette before the gold arrives */
+.glass {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 253, 249, 0.16), rgba(255, 253, 249, 0.07));
+}
+
+/* Rising liquid */
+.liquid {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 0%;
+  background: linear-gradient(180deg, #f3dd7a 0%, #e0c13d 22%, #cba600 55%, #9e8100 100%);
+  animation: fill var(--fill-ms) cubic-bezier(0.45, 0.05, 0.35, 1) forwards;
+}
+
+/* Two offset waves on the liquid surface, moving in opposite directions */
+.wave,
+.waveBack {
+  position: absolute;
+  left: 0;
+  width: 200%;
+  height: 18px;
+  top: -16px;
+  background-repeat: repeat-x;
+  background-size: 50% 100%;
+}
+.wave {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 20' preserveAspectRatio='none'%3E%3Cpath d='M0 10 Q 25 0 50 10 T 100 10 T 150 10 T 200 10 V20 H0 Z' fill='%23f3dd7a'/%3E%3C/svg%3E");
+  animation: waveMove 1.6s linear infinite;
+}
+.waveBack {
+  top: -12px;
+  opacity: 0.55;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 20' preserveAspectRatio='none'%3E%3Cpath d='M0 10 Q 25 20 50 10 T 100 10 T 150 10 T 200 10 V20 H0 Z' fill='%23e0c13d'/%3E%3C/svg%3E");
+  animation: waveMove 2.3s linear infinite reverse;
+}
+
+/* Tiny bubbles rising through the liquid */
+.bubble {
+  position: absolute;
+  bottom: -8px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(255, 250, 225, 0.85);
+  box-shadow: 0 0 4px rgba(255, 245, 200, 0.9);
+  animation: rise 1.8s ease-in infinite;
+  opacity: 0;
+}
+
+/* Light sweep once full */
+.shine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 45%;
+  left: -60%;
+  background: linear-gradient(105deg, transparent 0%, rgba(255, 255, 255, 0.75) 50%, transparent 100%);
+  animation: shine 0.9s ease-out forwards;
+  animation-delay: calc(var(--fill-ms) - 100ms);
+}
+
+/* Percentage + brand line */
+.meter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  z-index: 1;
+}
+.percent {
+  font-family: var(--font-heading);
+  font-size: 12px;
+  letter-spacing: 0.5em;
+  color: var(--gold-light);
+  font-variant-numeric: tabular-nums;
+  text-indent: 0.5em;
+}
+.track {
+  width: 140px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+.bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, transparent, var(--gold-light), var(--gold));
+  animation: bar var(--fill-ms) cubic-bezier(0.45, 0.05, 0.35, 1) forwards;
+}
+
+@keyframes fill {
+  0% { height: 0%; }
+  100% { height: 112%; } /* overshoot so the wave fully covers the top */
+}
+@keyframes bar {
+  to { width: 100%; }
+}
+@keyframes waveMove {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes rise {
+  0% { transform: translateY(0) scale(0.6); opacity: 0; }
+  20% { opacity: 0.9; }
+  100% { transform: translateY(-120px) scale(1); opacity: 0; }
+}
+@keyframes shine {
+  to { left: 120%; }
+}
+@keyframes glowIn {
+  to { opacity: 1; }
+}
+@keyframes logoGlow {
+  to { filter: drop-shadow(0 0 18px rgba(224, 193, 61, 0.45)); }
+}
+
+/* Respect reduced-motion: show the filled logo without movement */
+@media (prefers-reduced-motion: reduce) {
+  .liquid { animation: none; height: 112%; }
+  .wave, .waveBack, .bubble, .shine { animation: none; display: none; }
+  .bar { animation: none; width: 100%; }
+  .logoWrap, .stage::before { animation: none; opacity: 1; }
+}
