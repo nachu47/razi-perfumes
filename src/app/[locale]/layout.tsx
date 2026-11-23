@@ -18,9 +18,10 @@ import Splash, { splashBootScript } from '@/components/Splash';
 import { CartDrawer, SearchDrawer, ShopMenuDrawer } from '@/components/Drawers';
 import '../globals.css';
 
-export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }));
-}
+// Every storefront page depends on the visitor's cookies (currency, login, cart), so render
+// per request. This also keeps builds from touching the database (Vercel builds without it).
+// Catalogue data is still cached via unstable_cache in src/lib/catalog.ts.
+export const dynamic = 'force-dynamic';
 
 export const viewport: Viewport = { themeColor: '#120F0D', width: 'device-width', initialScale: 1 };
 

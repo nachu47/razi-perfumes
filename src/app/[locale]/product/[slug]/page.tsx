@@ -11,11 +11,6 @@ import { getStoreSettings, whatsappActive } from '@/lib/settings';
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
-export async function generateStaticParams() {
-  const { items } = await listProducts({ pageSize: 48 }).catch(() => ({ items: [] }));
-  return items.map((p) => ({ slug: p.slug }));
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
   const p = await getProductBySlug(slug);

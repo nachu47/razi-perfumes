@@ -2,18 +2,13 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
 import ProductListing from '@/components/ProductListing';
-import { getCollectionBySlug, getCollections } from '@/lib/catalog';
+import { getCollectionBySlug } from '@/lib/catalog';
 import { getRates, getVisitorCountry } from '@/lib/currency';
 import { parseFilters, type RawSearchParams } from '@/lib/filters';
 import { absoluteUrl, pick } from '@/lib/site';
 import { flatQuery } from '@/lib/query';
 
 type Props = { params: Promise<{ locale: string; slug: string }>; searchParams: Promise<RawSearchParams> };
-
-export async function generateStaticParams() {
-  const collections = await getCollections().catch(() => []);
-  return collections.map((c) => ({ slug: c.slug }));
-}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
