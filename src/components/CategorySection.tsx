@@ -2,10 +2,17 @@ import Image from 'next/image';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import styles from './CategorySection.module.css';
+import CategoryCarousel from './CategoryCarousel';
 import type { CollectionDTO } from '@/lib/catalog';
 import { pick } from '@/lib/site';
 
-export default async function CategorySection({ collections }: { collections: CollectionDTO[] }) {
+export interface Highlight {
+  key: 'bestSellers' | 'newArrivals';
+  href: string;
+  image: string | null;
+}
+
+export default async function CategorySection({ collections, highlights = [] }: { collections: CollectionDTO[]; highlights?: Highlight[] }) {
   const t = await getTranslations();
   const locale = await getLocale();
   return (
@@ -29,11 +36,15 @@ export default async function CategorySection({ collections }: { collections: Co
 
       <h2 className={styles.sectionTitle}>{t('home.shopByCollection')}</h2>
 
-      <div className={styles.grid}>
-        {collections.map((c) => {
+      <CategoryCarousel>
+        {collections.map((c, i) => {
           const name = pick(locale, c.nameEn, c.nameAr);
+          // Mobile carousel fills column by column; this order makes each 2×2 page read row by row
+          const page = Math.floor(i / 4);
+          const pos = i % 4;
+          const mobileOrder = page * 4 + (pos % 2) * 2 + Math.floor(pos / 2);
           return (
-            <Link key={c.id} href={`/collection/${c.slug}`} className={styles.card}>
+            <Link key={c.id} href={`/collection/${c.slug}`} className={styles.card} style={{ ['--m-order' as string]: mobileOrder }}>
               <div className={styles.imageWrap}>
                 {c.image && <Image src={c.image} alt={name} width={800} height={800} sizes="(max-width: 768px) 50vw, 25vw" className={styles.image} />}
                 <div className={styles.overlay} />
@@ -45,7 +56,20 @@ export default async function CategorySection({ collections }: { collections: Co
             </Link>
           );
         })}
-      </div>
+      </CategoryCarousel>
+
+      {highlights.length > 0 && (
+        <div className={styles.highlights}>
+          {highlights.map((h) => (
+            <Link key={h.key} href={h.href} className={styles.circle}>
+              <span className={styles.circleImage}>
+                {h.image && <Image src={h.image} alt="" width={240} height={240} sizes="140px" />}
+              </span>
+              <span className={styles.circleLabel}>{t(`home.${h.key}`)}</span>
+            </Link>
+          ))}
+        </div>
+      )}
     </section>
   );
 }

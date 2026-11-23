@@ -272,20 +272,6 @@ export const getHeroSlides = unstable_cache(
   CACHE,
 );
 
-export const getAvailableSizes = unstable_cache(
-  async (): Promise<number[]> => {
-    const rows = await prisma.productVariant.findMany({
-      where: { sizeMl: { not: null }, product: { isActive: true } },
-      distinct: ['sizeMl'],
-      select: { sizeMl: true },
-      orderBy: { sizeMl: 'asc' },
-    });
-    return rows.map((r) => r.sizeMl!).filter(Boolean);
-  },
-  ['getAvailableSizes'],
-  CACHE,
-);
-
 export interface PageDTO {
   slug: string;
   titleEn: string;

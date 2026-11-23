@@ -34,15 +34,22 @@
   margin-bottom: 48px;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
+.carousel {
+  position: relative;
   max-width: 1480px;
   margin: 0 auto;
 }
 
+/* Desktop: centered rows, so 7 collections sit as 4 + 3 */
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+}
+
 .card {
+  flex: 0 0 calc((100% - 90px) / 4);
   position: relative;
   aspect-ratio: 1/1.2;
   overflow: hidden;
@@ -115,30 +122,164 @@
   transform: translateY(0);
 }
 
+/* Carousel arrows — mobile only */
+.arrow {
+  display: none;
+}
+
+/* Best Sellers / New Arrivals circles */
+.highlights {
+  display: flex;
+  justify-content: center;
+  gap: 64px;
+  margin-top: 64px;
+}
+.circle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.circleImage {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: var(--ivory);
+  border: 1px solid var(--gold);
+  box-shadow: 0 0 0 5px var(--cream), 0 0 0 6px rgba(203, 166, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.circleImage img {
+  width: 78%;
+  height: 78%;
+  object-fit: contain;
+}
+.circle:hover .circleImage {
+  transform: translateY(-4px);
+  box-shadow: 0 0 0 5px var(--cream), 0 0 0 6px var(--gold), 0 14px 30px rgba(18, 15, 13, 0.12);
+}
+.circleLabel {
+  font-family: var(--font-heading);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--dark);
+}
+
 @media (max-width: 1024px) {
   .section {
     padding: 80px 40px;
   }
   .grid {
-    grid-template-columns: repeat(2, 1fr);
     gap: 20px;
+  }
+  .card {
+    flex-basis: calc((100% - 40px) / 3);
   }
 }
 
+/* Mobile: swipeable carousel, two rows, two columns visible (2×2), label under each tile */
 @media (max-width: 768px) {
   .section {
-    padding: 60px 20px;
+    padding: 60px 16px;
   }
   .brandIntro {
     margin-bottom: 48px;
   }
+  .sectionTitle {
+    margin-bottom: 28px;
+  }
   .grid {
-    grid-template-columns: 1fr;
-    gap: 20px;
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-rows: repeat(2, auto);
+    grid-auto-columns: calc((100% - 14px) / 2);
+    justify-content: start; /* desktop centers the row; centering overflowing tracks would hide column 1 */
+    gap: 22px 14px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .grid::-webkit-scrollbar {
+    display: none;
+  }
+  .card {
+    flex: none;
+    aspect-ratio: auto;
+    background: transparent;
+    overflow: visible;
+    justify-content: flex-start;
+    scroll-snap-align: start;
+    border-radius: 0;
+    order: var(--m-order, 0);
+  }
+  .imageWrap {
+    position: relative;
+    inset: auto;
+    aspect-ratio: 1 / 1;
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--ivory);
+  }
+  .overlay {
+    display: none;
+  }
+  .content {
+    padding: 10px 4px 0;
+  }
+  .name {
+    color: var(--dark);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    margin-bottom: 0;
   }
   .explore {
-    opacity: 1;
-    transform: translateY(0);
+    display: none;
+  }
+  .arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: calc(25% - 8px);
+    z-index: 5;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(18, 15, 13, 0.7);
+    color: var(--white);
+    backdrop-filter: blur(4px);
+    transition: opacity var(--transition);
+  }
+  .arrow:disabled {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .arrowPrev {
+    inset-inline-start: -6px;
+  }
+  .arrowNext {
+    inset-inline-end: -6px;
+  }
+  :global([dir='rtl']) .arrow svg {
+    transform: scaleX(-1);
+  }
+  .highlights {
+    gap: 36px;
+    margin-top: 40px;
+  }
+  .circleImage {
+    width: 104px;
+    height: 104px;
+  }
+  .circleLabel {
+    font-size: 10px;
+    letter-spacing: 0.15em;
   }
 }
 

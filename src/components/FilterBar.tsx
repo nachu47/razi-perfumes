@@ -8,14 +8,18 @@ import { useStore } from './providers/StoreProvider';
 import { pick } from '@/lib/site';
 
 const NOTES = ['spicy', 'woody', 'sweet', 'fruity', 'floral', 'musky', 'oud'] as const;
+// Size filter per the brief: inspired versions come in 50ml / 100ml; Signature bottles are 200ml.
+const SIZES = [
+  { value: '50', key: 'size50' },
+  { value: '100', key: 'size100' },
+  { value: '200', key: 'sizeSignature' },
+] as const;
 
 // Filters are kept in the URL so results are shareable, crawlable and server-rendered.
 export default function FilterBar({
-  sizes,
   collections,
   showCollection,
 }: {
-  sizes: number[];
   collections?: { slug: string; nameEn: string; nameAr: string }[];
   showCollection?: boolean;
 }) {
@@ -83,9 +87,9 @@ export default function FilterBar({
         </label>
         <select id="f-size" value={get('size')} onChange={(e) => update({ size: e.target.value })} className={styles.filterSelect}>
           <option value="all">{t('allSizes')}</option>
-          {sizes.map((s) => (
-            <option key={s} value={String(s)}>
-              {s}ML
+          {SIZES.map((s) => (
+            <option key={s.value} value={s.value}>
+              {t(s.key)}
             </option>
           ))}
         </select>

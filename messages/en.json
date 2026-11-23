@@ -102,7 +102,11 @@
     "setsTitle": "Curated Gift Collections",
     "scrollLeft": "Scroll left",
     "scrollRight": "Scroll right",
-    "slide": "Slide {n}"
+    "slide": "Slide {n}",
+    "bestSellers": "BEST SELLERS",
+    "newArrivals": "NEW ARRIVALS",
+    "categoriesPrev": "Previous categories",
+    "categoriesNext": "More categories"
   },
   "filters": {
     "gender": "GENDER",
@@ -138,7 +142,10 @@
       "floral": "FLORAL",
       "musky": "MUSKY",
       "oud": "OUD"
-    }
+    },
+    "size50": "50ML",
+    "size100": "100ML",
+    "sizeSignature": "SIGNATURE"
   },
   "product": {
     "smellNature": "SMELL NATURE",
@@ -346,7 +353,6 @@
     "collections": "COLLECTIONS",
     "signature": "Signature Line",
     "luxury": "Luxury Line",
-    "hairBody": "Hair & Body",
     "sets": "Sets Line",
     "policies": "POLICIES",
     "terms": "Terms & Conditions",
@@ -361,7 +367,8 @@
     "selectCountry": "Select country",
     "selectLanguage": "Select language",
     "english": "ENGLISH",
-    "arabic": "ARABIC"
+    "arabic": "ARABIC",
+    "perfumeOil": "Perfume Oil"
   },
   "country": {
     "title": "CHOOSE YOUR LANGUAGE & REGION",

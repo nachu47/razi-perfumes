@@ -11,12 +11,19 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   setRequestLocale(locale);
   const t = await getTranslations('home');
 
-  const [slides, recommended, luxury, collections] = await Promise.all([
+  const [slides, recommended, luxury, collections, topSeller, newest] = await Promise.all([
     getHeroSlides(),
     listProducts({ recommended: true, pageSize: 12, sort: 'newest' }),
     listProducts({ featured: true, pageSize: 12, sort: 'newest' }),
     getCollections(),
+    listProducts({ sort: 'best-selling', pageSize: 1 }),
+    listProducts({ sort: 'newest', pageSize: 1 }),
   ]);
+  // Circles under the categories use a real product photo each
+  const highlights = [
+    { key: 'bestSellers' as const, href: '/shop?sort=best-selling', image: topSeller.items[0]?.image ?? null },
+    { key: 'newArrivals' as const, href: '/shop?sort=newest', image: newest.items[0]?.image ?? null },
+  ];
   const setsCollection = collections.find((c) => c.slug === 'gift-sets');
 
   const orgJsonLd = {
@@ -40,7 +47,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
       <ProductCarousel title={t('recommended')} products={recommended.items} />
 
-      <CategorySection collections={collections} />
+      <CategorySection collections={collections} highlights={highlights} />
 
       {/* Category Highlight Section */}
       <section

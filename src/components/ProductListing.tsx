@@ -4,7 +4,7 @@ import { Link } from '@/i18n/navigation';
 import styles from './ProductListing.module.css';
 import ProductCard from './ProductCard';
 import FilterBar from './FilterBar';
-import { getAvailableSizes, getCollections, listProducts, type ProductFilters } from '@/lib/catalog';
+import { getCollections, listProducts, type ProductFilters } from '@/lib/catalog';
 
 /**
  * Server-rendered product grid with URL-driven filters + pagination.
@@ -29,7 +29,7 @@ export default async function ProductListing({
 }) {
   const t = await getTranslations();
   const locale = await getLocale();
-  const [result, sizes, collections] = await Promise.all([listProducts(filters), getAvailableSizes(), getCollections()]);
+  const [result, collections] = await Promise.all([listProducts(filters), getCollections()]);
 
   const pageHref = (page: number) => {
     const qs = new URLSearchParams({ ...baseQuery, ...(page > 1 ? { page: String(page) } : {}) });
@@ -63,7 +63,7 @@ export default async function ProductListing({
       </header>
 
       <Suspense>
-        <FilterBar sizes={sizes} collections={collections} showCollection={showCollectionFilter} />
+        <FilterBar collections={collections} showCollection={showCollectionFilter} />
       </Suspense>
 
       {result.items.length === 0 ? (

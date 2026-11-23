@@ -102,7 +102,11 @@
     "setsTitle": "مجموعات هدايا منسقة",
     "scrollLeft": "تمرير لليسار",
     "scrollRight": "تمرير لليمين",
-    "slide": "الشريحة {n}"
+    "slide": "الشريحة {n}",
+    "bestSellers": "الأكثر مبيعاً",
+    "newArrivals": "وصل حديثاً",
+    "categoriesPrev": "الفئات السابقة",
+    "categoriesNext": "المزيد من الفئات"
   },
   "filters": {
     "gender": "الفئة",
@@ -138,7 +142,10 @@
       "floral": "زهري",
       "musky": "مسكي",
       "oud": "عود"
-    }
+    },
+    "size50": "50 مل",
+    "size100": "100 مل",
+    "sizeSignature": "عطور التوقيع"
   },
   "product": {
     "smellNature": "طبيعة الرائحة",
@@ -346,7 +353,6 @@
     "collections": "المجموعات",
     "signature": "خط التوقيع",
     "luxury": "الخط الفاخر",
-    "hairBody": "الشعر والجسم",
     "sets": "خط الأطقم",
     "policies": "السياسات",
     "terms": "الشروط والأحكام",
@@ -361,7 +367,8 @@
     "selectCountry": "اختر الدولة",
     "selectLanguage": "اختر اللغة",
     "english": "English",
-    "arabic": "العربية"
+    "arabic": "العربية",
+    "perfumeOil": "زيوت عطرية"
   },
   "country": {
     "title": "اختر لغتك ومنطقتك",

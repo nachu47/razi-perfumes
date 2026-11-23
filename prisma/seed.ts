@@ -9,13 +9,14 @@ const prisma = new PrismaClient();
 const IMG = 'https://kw.gissah.com/web/image';
 
 const collections = [
-  { slug: 'signature', nameEn: "Signature Collection's", nameAr: 'مجموعة التوقيع', image: `${IMG}/product.public.category/13/image_1920/1024x0?unique=cc42a6c`, descriptionEn: 'Our iconic 200ml signature creations.', descriptionAr: 'إبداعاتنا الأيقونية بحجم 200 مل.' },
-  { slug: 'inspired', nameEn: 'INSPIRE VERSION PERFUME', nameAr: 'عطور مستوحاة', image: `${IMG}/product.public.category/11/image_1920/1024x0?unique=3d8a714`, descriptionEn: 'Premium inspired renditions in 50ml and 100ml.', descriptionAr: 'نسخ مستوحاة فاخرة بحجم 50 و100 مل.' },
-  { slug: 'gift-sets', nameEn: 'Gift set', nameAr: 'أطقم الهدايا', image: `${IMG}/product.public.category/18/image_1920/1024x0?unique=1ab1e03`, descriptionEn: 'Curated gift collections.', descriptionAr: 'مجموعات هدايا منسقة بعناية.' },
-  { slug: 'hair-mist-body-cream', nameEn: 'Hair Mist & Body Cream', nameAr: 'معطر الشعر وكريم الجسم', image: `${IMG}/product.public.category/52/image_1920/1024x0?unique=1e629ba`, descriptionEn: 'Scented care for hair and body.', descriptionAr: 'عناية معطرة للشعر والجسم.' },
-  { slug: 'home-fragrance', nameEn: 'HOME FRAGRANCE', nameAr: 'معطرات المنزل', image: `${IMG}/product.public.category/53/image_1920/1024x0?unique=21288ce`, descriptionEn: 'Fill your home with luxury.', descriptionAr: 'املأ منزلك بالفخامة.' },
-  { slug: 'buhur', nameEn: 'BUHUR', nameAr: 'بخور', image: `${IMG}/product.public.category/14/image_1920/1024x0?unique=fdb1ef3`, descriptionEn: 'Traditional luxury incense.', descriptionAr: 'بخور فاخر تقليدي.' },
-  { slug: 'offers', nameEn: 'OFFERS', nameAr: 'العروض', image: `${IMG}/product.public.category/52/image_1920/1024x0?unique=1e629ba`, descriptionEn: 'Limited-time special offers.', descriptionAr: 'عروض خاصة لفترة محدودة.' },
+  { slug: 'signature', nameEn: 'Signature Fragrance', nameAr: 'عطور التوقيع', image: `${IMG}/product.public.category/13/image_1920/1024x0?unique=cc42a6c`, descriptionEn: 'Our iconic 200ml signature creations.', descriptionAr: 'إبداعاتنا الأيقونية بحجم 200 مل.' },
+  { slug: 'inspired', nameEn: 'Inspired Collections', nameAr: 'المجموعات المستوحاة', image: `${IMG}/product.public.category/11/image_1920/1024x0?unique=3d8a714`, descriptionEn: 'Premium inspired renditions in 50ml and 100ml.', descriptionAr: 'نسخ مستوحاة فاخرة بحجم 50 و100 مل.' },
+  // Image is a temporary placeholder — replace it in Admin → Collections
+  { slug: 'perfume-oil', nameEn: 'Perfume Oil', nameAr: 'زيوت عطرية', image: `${IMG}/product.public.category/14/image_1920/1024x0?unique=fdb1ef3`, descriptionEn: 'Concentrated perfume oils, alcohol-free.', descriptionAr: 'زيوت عطرية مركزة خالية من الكحول.' },
+  { slug: 'home-fragrance', nameEn: 'Home Fragrance', nameAr: 'معطرات المنزل', image: `${IMG}/product.public.category/53/image_1920/1024x0?unique=21288ce`, descriptionEn: 'Fill your home with luxury.', descriptionAr: 'املأ منزلك بالفخامة.' },
+  { slug: 'buhur', nameEn: 'Buhur', nameAr: 'بخور', image: `${IMG}/product.public.category/14/image_1920/1024x0?unique=fdb1ef3`, descriptionEn: 'Traditional luxury incense.', descriptionAr: 'بخور فاخر تقليدي.' },
+  { slug: 'gift-sets', nameEn: 'Gift Set', nameAr: 'أطقم الهدايا', image: `${IMG}/product.public.category/18/image_1920/1024x0?unique=1ab1e03`, descriptionEn: 'Curated gift collections.', descriptionAr: 'مجموعات هدايا منسقة بعناية.' },
+  { slug: 'offers', nameEn: 'Offers', nameAr: 'العروض', image: `${IMG}/product.public.category/52/image_1920/1024x0?unique=1e629ba`, descriptionEn: 'Limited-time special offers.', descriptionAr: 'عروض خاصة لفترة محدودة.' },
 ];
 
 type SeedVariant = { label: string; sizeMl: number | null; price: string; stock?: number };
@@ -162,17 +163,6 @@ const products: SeedProduct[] = [
     notesAr: ['زعفران، كشمش أسود، برغموت', 'ورد، ياسمين، خشب العنبر', 'عود، فانيليا، مسك، صندل'],
     ingredientsEn: 'Alcohol Denat., Parfum, Aqua.',
     variants: [{ label: '3 x 50ml', sizeMl: 150, price: '45.000' }],
-  },
-  {
-    slug: 'beyond-me-hair-mist', nameEn: 'Beyond Me Hair Mist', nameAr: 'معطر شعر بيوند مي', collection: 'hair-mist-body-cream', gender: 'FEMALE',
-    image: `${IMG}/product.public.category/52/image_1920/1024x0?unique=1e629ba`,
-    descriptionEn: 'A light, nourishing hair mist infused with the iconic scent of Beyond Me. Protects and scents the hair with a delicate trail of saffron, rose, and amber.',
-    descriptionAr: 'معطر شعر خفيف ومغذٍ بعطر بيوند مي الأيقوني، يحمي الشعر ويعطره بأثر رقيق من الزعفران والورد والعنبر.',
-    noteTags: ['musky', 'floral', 'spicy'],
-    notes: ['Bergamot, Saffron', 'Jasmine, Soft Rose', 'Amber, Light Musk'],
-    notesAr: ['برغموت، زعفران', 'ياسمين، ورد ناعم', 'عنبر، مسك خفيف'],
-    ingredientsEn: 'Water (Aqua), Alcohol Denat., Fragrance, Glycerin, Panthenol.',
-    variants: [{ label: '75ml', sizeMl: 75, price: '12.000' }],
   },
   {
     slug: 'oud-royal-room-spray', nameEn: 'Oud Royal Room Spray', nameAr: 'معطر غرف العود الملكي', collection: 'home-fragrance', gender: 'UNISEX',

@@ -20,7 +20,7 @@ const aboutLinks = [
 const collectionLinks = [
   { href: '/collection/signature', key: 'signature' },
   { href: '/shop?featured=1', key: 'luxury' },
-  { href: '/collection/hair-mist-body-cream', key: 'hairBody' },
+  { href: '/collection/perfume-oil', key: 'perfumeOil' },
   { href: '/collection/gift-sets', key: 'sets' },
 ] as const;
 
